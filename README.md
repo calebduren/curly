@@ -4,11 +4,13 @@
 
 Curly turns straight quotation marks and apostrophes into considered punctuation. It preserves code through Markdown/HTML integrations, explains its decisions, and leaves unresolved marks alone. No model, network request, or runtime dependency.
 
-[Playground](https://cowboy.is/curly/) · [Source](https://github.com/calebduren/curly) · [Measurements](https://github.com/calebduren/curly/tree/main/benchmarks)
+[Playground](https://cowboy-curly.caleb-9b2.workers.dev/curly/) · [Source](https://github.com/calebduren/curly) · [Measurements](https://github.com/calebduren/curly/tree/main/benchmarks)
 
 ```sh
-npm install cowboy-curly
+npm install https://github.com/calebduren/curly/releases/download/v1.0.0/cowboy-curly-1.0.0.tgz
 ```
+
+The tested release archive is installable now. The shorter registry command, `npm install cowboy-curly`, will become available after npm publication. Imports remain `cowboy-curly` with either distribution.
 
 ```ts
 import { smarten } from 'cowboy-curly';

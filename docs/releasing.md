@@ -5,8 +5,8 @@
 3. `npm run bench` and review the environment, scope, and measurements.
 4. `npm run check:package` verifies the actual tarball in a clean temporary consumer: ESM, CommonJS, type resolution, CSS export, and both AST adapters.
 5. Audit `npm pack --dry-run -w cowboy-curly`. Only the public package files belong in the archive.
-6. From `packages/curly`, publish with `npm publish --access public`. Use npm’s browser login and required second factor; never put a token in source or chat.
-7. Commit, tag `v<version>`, and create a GitHub release with the tested tarball.
+6. Commit, tag `v<version>`, and create a GitHub release with the tested tarball. An archive install can ship independently of registry publication.
+7. From `packages/curly`, publish with `npm publish --access public`. Use npm’s browser login and required second factor; never put a token in source or chat. Advertise the registry command only after a public install succeeds; otherwise keep the verified GitHub archive command.
 8. `npm run build && npx wrangler deploy` publishes the dedicated playground Worker.
 9. Verify the live `/curly/` page, hashed assets, content headers, interactions, and narrow mobile layout. Check the package’s public install command in a new consumer.
 

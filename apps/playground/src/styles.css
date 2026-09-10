@@ -868,6 +868,12 @@
     max-width: 350px;
     font-size: 13px;
   }
+  .install-command code {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 11px;
+    line-height: 1.7;
+  }
   .install-copy > .install-footnote {
     font-size: 11px;
     color: var(--muted);

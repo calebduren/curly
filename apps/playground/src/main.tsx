@@ -31,6 +31,7 @@ import './styles.css';
 import { samples } from './samples';
 import { inspectMarkdown, integrationSnippet } from './model';
 import { ReplayBoundary } from './ReplayBoundary';
+import { installCommand, distributionLabel } from './distribution';
 
 const StreamingSpecimen = lazy(() => import('./StreamingSpecimen'));
 const defaults = { primes: false, ellipses: false };
@@ -288,6 +289,7 @@ function App() {
                 <button
                   type="button"
                   className={'inspect-button' + (inspect ? ' active' : '')}
+                  aria-label="See changes"
                   aria-pressed={inspect}
                   disabled={!formatted || streaming}
                   onClick={() => {
@@ -564,16 +566,20 @@ function App() {
             </h2>
             <p>Add Curly where your app renders prose. Your model, your interface, your words.</p>
             <div className="install-command">
-              <code>npm install cowboy-curly</code>
+              <code>{installCommand}</code>
               <button
                 className="icon-button"
                 aria-label="Copy npm install command"
-                onClick={() => copy('npm install cowboy-curly', 'install')}
+                onClick={() => copy(installCommand, 'install')}
               >
                 {copyState === 'install' ? <Check size={17} /> : <Copy size={17} />}
               </button>
             </div>
-            <p className="install-footnote">Open source · MIT licensed · Runs locally</p>
+            <p className="install-footnote">
+              {distributionLabel}
+              <br />
+              Open source · MIT licensed · Runs locally
+            </p>
             <a className="underlined-link" href="https://github.com/calebduren/curly">
               Source & documentation <ArrowUpRight size={15} />
             </a>
@@ -720,8 +726,8 @@ function App() {
           <a href="https://github.com/calebduren/curly">
             GitHub <ExternalLink size={13} />
           </a>
-          <a href="https://www.npmjs.com/package/cowboy-curly">
-            npm <ExternalLink size={13} />
+          <a href="https://github.com/calebduren/curly/releases">
+            Releases <ExternalLink size={13} />
           </a>
           <span>© {new Date().getFullYear()} Caleb Duren</span>
         </div>
