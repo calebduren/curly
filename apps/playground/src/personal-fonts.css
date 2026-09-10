@@ -75,14 +75,7 @@ h1,
 h2,
 em,
 .specimen,
-.principle > p,
-.principle-mark,
 .decision-glyph {
-  font-weight: 500;
-}
-
-.tiny-quote,
-.rule b {
   font-weight: 500;
 }
 
@@ -96,18 +89,11 @@ em,
   font-weight: 800;
 }
 
-.intro-copy p:first-child,
 .select-wrap select,
 .pane-toolbar > label,
 .replay-button,
-.notes-list summary,
-.cowboy strong,
 .decision-detail strong {
   font-weight: 600;
-}
-
-.notes-list summary > span {
-  font-weight: 400;
 }
 
 .specimen[data-typeface='sans'] {

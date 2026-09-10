@@ -4,6 +4,12 @@ The local design preview pairs PP Kyoto Medium (500) and Extrabold (800), with t
 
 The reading preview defaults to Serif and can switch to Sans serif. This applies to original and formatted prose, headings, emphasis, and replay. Source/code and page branding keep their own fonts. The public build offers the same choice using Fraunces and DM Sans.
 
+## Interface scale
+
+The page uses 13, 15, and 17px for body and interface roles, with 13px as the minimum at every breakpoint. Display headings have a separate, smaller scale than the original design. Letter spacing is zero throughout; headings use upright type. Introductory promise and supporting copy share a size and weight, with color providing hierarchy. Editorial sections form centered reading columns capped at 65ch.
+
+The masthead and footer logo is the punctuation face alone: no visible wordmark text. The face remains live Kyoto characters, with the small tilde `˜` and breve `˘`.
+
 ## Local preview
 
 Obtain the fonts directly from [Pangram Pangram](https://pangrampangram.com/), then put these files in `apps/playground/.local/fonts/`:

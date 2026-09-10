@@ -102,7 +102,6 @@ export function CurlyLogo({ label = 'Curly home' }: { label?: string }) {
         </span>
         <span className="curly-mouth">˘</span>
       </span>
-      <span className="wordmark-name">Curly</span>
     </a>
   );
 }

@@ -17,32 +17,29 @@ import type { CurlyOptions } from 'cowboy-curly';
 import {
   ArrowDown,
   ArrowUpRight,
-  Check,
   ChevronDown,
   Copy,
-  ExternalLink,
   Pause,
-  Plus,
   Play,
   RotateCcw,
-  ScanText,
   StepForward,
   Terminal,
-  Download,
   X,
 } from 'lucide-react';
 import '@curly/fonts.css';
-import 'cowboy-curly/prose.css';
 import './styles.css';
 import { samples } from './samples';
 import { inspectMarkdown, integrationSnippet } from './model';
 import { ReplayBoundary } from './ReplayBoundary';
 import { installCommand, distributionLabel } from './distribution';
 import { CurlyLogo } from './CurlyLogo';
+import { Disclosure, TaskStatus, Toggle } from './Controls';
+import { HowItWorks } from './HowItWorks';
+import { Footer } from './Footer';
 
 const StreamingSpecimen = lazy(() => import('./StreamingSpecimen'));
 const defaults = { primes: false, ellipses: false };
-const chunkSizes = [1, 3, 2, 7, 1, 4, 6, 2];
+const chunkSizes = [1, 3, 2, 4, 1, 2, 3, 2];
 const kindNames: Record<string, string> = {
   'opening-quote': 'Opening quote',
   'closing-quote': 'Closing quote',
@@ -105,6 +102,7 @@ const markComponents = {
     <span className="omitted-image">[Image: {alt ?? 'remote media'}]</span>
   ),
   a: ProseLink,
+  input: TaskStatus,
 };
 
 function App() {
@@ -124,7 +122,6 @@ function App() {
   const [notice, setNotice] = useState('');
   const [copyState, setCopyState] = useState('');
   const outputRef = useRef<HTMLDivElement>(null);
-  const sourceRef = useRef<HTMLTextAreaElement>(null);
   const shown = streaming ? source.slice(0, cursor) : source;
   const report = useMemo(() => inspectMarkdown(shown, options), [shown, options]);
   const changes = report.decisions.filter((d) => d.original !== d.replacement);
@@ -142,7 +139,7 @@ function App() {
             n + (speed === 'slow' ? 1 : chunkSizes[chunk++ % chunkSizes.length]),
           ),
         ),
-      speed === 'slow' ? 80 : 35,
+      speed === 'slow' ? 110 : 90,
     );
     return () => window.clearInterval(timer);
   }, [playing, source, speed]);
@@ -197,18 +194,6 @@ function App() {
       setNotice('Clipboard access is unavailable. Select the text and copy it manually.');
     }
   }
-  function download() {
-    const blob = new Blob([outputRef.current?.innerText ?? ''], {
-      type: 'text/plain;charset=utf-8',
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'curly.txt';
-    link.click();
-    URL.revokeObjectURL(url);
-    setNotice('Your formatted text was downloaded.');
-  }
 
   return (
     <>
@@ -217,29 +202,21 @@ function App() {
       </a>
       <header className="masthead" id="top">
         <CurlyLogo />
-        <a className="cowboy" href="https://cowboy.is">
-          A little something by <strong>Cowboy</strong>
-          <ArrowUpRight size={14} />
-        </a>
         <nav aria-label="Main navigation">
           <a href="#playground">Playground</a>
-          <a href="#install">
-            Install <ArrowDown size={13} />
-          </a>
-          <a href="#field-notes">Field notes</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="#install">Install</a>
         </nav>
       </header>
 
       <main>
-        <section className="introduction" aria-labelledby="title">
-          <h1 id="title">
-            Mind your <em>marks.</em>
-          </h1>
+        <section className="introduction editorial" aria-labelledby="title">
+          <h1 id="title">Mind your marks.</h1>
           <div className="intro-copy">
             <p>Good words deserve good type.</p>
             <p>
-              A small, open-source typography kit for AI apps. <br />
-              Try your words. See the difference. Take it with you.
+              A small, open-source typography kit for AI apps. Try your words. See the difference.
+              Take it with you.
             </p>
           </div>
         </section>
@@ -260,27 +237,15 @@ function App() {
                 <ChevronDown size={14} />
               </div>
             </div>
-            <span className="local-note">
-              <span className="status-dot" />
-              Stays in your browser
-            </span>
           </div>
           <div className="workspace">
             <div className="source-pane">
               <div className="pane-toolbar">
                 <label htmlFor="source">Your words</label>
                 <span>Markdown welcome</span>
-                <button
-                  className="icon-button"
-                  aria-label="Copy original source"
-                  onClick={() => copy(source, 'source')}
-                >
-                  {copyState === 'source' ? <Check size={16} /> : <Copy size={16} />}
-                </button>
               </div>
               <textarea
                 id="source"
-                ref={sourceRef}
                 value={source}
                 onChange={(e) => updateSource(e.target.value)}
                 spellCheck={false}
@@ -289,70 +254,70 @@ function App() {
                 aria-describedby="source-help"
               />
               <div className="source-footer">
-                <span id="source-help">Type, paste, or pick a sample.</span>
+                <span id="source-help">
+                  Your text is processed here in your browser. It isn’t uploaded.
+                </span>
                 <span>{source.length.toLocaleString()} / 100,000</span>
               </div>
             </div>
             <div className="output-pane">
               <div className="pane-toolbar output-toolbar">
-                <div
-                  className="segmented preview-punctuation"
-                  role="group"
-                  aria-label="Preview punctuation"
-                >
-                  <button
-                    type="button"
-                    aria-pressed={!formatted}
-                    onClick={() => {
-                      setFormatted(false);
-                      setInspect(false);
-                    }}
+                <div className="preview-toggles">
+                  <div
+                    className="segmented preview-punctuation"
+                    role="group"
+                    aria-label="Preview punctuation"
                   >
-                    Original
-                  </button>
-                  <button type="button" aria-pressed={formatted} onClick={() => setFormatted(true)}>
-                    With Curly
-                    <span className="tiny-quote" aria-hidden="true">
-                      ”
-                    </span>
-                  </button>
+                    <button
+                      type="button"
+                      aria-pressed={!formatted}
+                      onClick={() => {
+                        setFormatted(false);
+                        setInspect(false);
+                      }}
+                    >
+                      Original
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={formatted}
+                      onClick={() => setFormatted(true)}
+                    >
+                      With Curly
+                    </button>
+                  </div>
+                  <div
+                    className="segmented typeface-switch"
+                    role="group"
+                    aria-label="Reading typeface"
+                  >
+                    <button
+                      type="button"
+                      aria-pressed={typeface === 'serif'}
+                      onClick={() => setTypeface('serif')}
+                    >
+                      Serif
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={typeface === 'sans'}
+                      onClick={() => setTypeface('sans')}
+                    >
+                      Sans serif
+                    </button>
+                  </div>
                 </div>
-                <div
-                  className="segmented typeface-switch"
-                  role="group"
-                  aria-label="Reading typeface"
-                >
-                  <button
-                    type="button"
-                    aria-pressed={typeface === 'serif'}
-                    onClick={() => setTypeface('serif')}
-                  >
-                    Serif
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={typeface === 'sans'}
-                    onClick={() => setTypeface('sans')}
-                  >
-                    Sans serif
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  className={'inspect-button' + (inspect ? ' active' : '')}
-                  aria-label="See changes"
-                  aria-pressed={inspect}
-                  aria-expanded={inspect}
-                  aria-controls="inspection"
+                <Toggle
+                  className="highlight-toggle"
+                  label="Highlight changes"
+                  checked={inspect}
+                  controls="inspection"
                   disabled={!formatted || streaming}
-                  onClick={() => {
-                    setInspect(!inspect);
+                  onChange={(value) => {
+                    setInspect(value);
                     setSelected(null);
                   }}
-                >
-                  <ScanText size={15} />
-                  <span>See changes</span>
-                </button>
+                />
               </div>
               <div className={'specimen-wrap' + (reading ? ' reading-on' : '')}>
                 <div
@@ -401,7 +366,6 @@ function App() {
                       </Markdown>
                     </InspectionContext.Provider>
                   )}
-                  {playing && <span className="stream-caret" aria-label="Replaying text" />}
                 </div>
               </div>
               <div className="output-footer">
@@ -423,106 +387,77 @@ function App() {
                     disabled={!shown}
                     onClick={() => copy(outputRef.current?.innerText ?? '', 'output')}
                   >
-                    {copyState === 'output' ? <Check size={14} /> : <Copy size={14} />}Copy text
-                  </button>
-                  <button
-                    type="button"
-                    className="icon-button"
-                    disabled={!shown}
-                    aria-label="Download preview as text"
-                    onClick={download}
-                  >
-                    <Download size={15} />
+                    <Copy size={15} />
+                    {copyState === 'output' ? 'Copied' : 'Copy text'}
                   </button>
                 </div>
               </div>
             </div>
           </div>
-          <div className="rule-bar">
-            <div className="rule-toggles">
-              <span className="rule-label">The finishing touches</span>
-              <label className="rule fixed">
-                <Check size={13} />
-                Quotes & apostrophes
-              </label>
-              <label className="rule">
-                <input
-                  type="checkbox"
-                  checked={!!options.primes}
-                  onChange={(e) => {
-                    setOptions({ ...options, primes: e.target.checked });
-                    setSelected(null);
-                  }}
-                />
-                <span>
-                  Primes <b>′ ″</b>
-                </span>
-              </label>
-              <label className="rule">
-                <input
-                  type="checkbox"
-                  checked={!!options.ellipses}
-                  onChange={(e) => {
-                    setOptions({ ...options, ellipses: e.target.checked });
-                    setSelected(null);
-                  }}
-                />
-                <span>
-                  Ellipses <b>…</b>
-                </span>
-              </label>
-            </div>
-            <label className="reading-toggle">
-              <input
-                type="checkbox"
-                checked={reading}
-                onChange={(e) => setReading(e.target.checked)}
+          <div className="playground-controls">
+            <div className="rule-bar" role="group" aria-label="Optional formatting">
+              <Toggle
+                label="Primes"
+                checked={!!options.primes}
+                onChange={(value) => {
+                  setOptions({ ...options, primes: value });
+                  setSelected(null);
+                }}
               />
-              <span>Reading styles</span>
-              <span className="optional-label">optional</span>
-            </label>
-          </div>
-          <div className="stream-bar">
-            <div>
-              <button type="button" className="replay-button" disabled={!source} onClick={replay}>
-                {playing ? <Pause size={14} /> : <Play size={14} />}{' '}
-                {playing
-                  ? 'Pause replay'
-                  : streaming && cursor < source.length
-                    ? 'Resume replay'
-                    : 'Replay as a stream'}
-              </button>
-              <span className="replay-explanation">Same words. A few characters at a time.</span>
+              <Toggle
+                label="Ellipses"
+                checked={!!options.ellipses}
+                onChange={(value) => {
+                  setOptions({ ...options, ellipses: value });
+                  setSelected(null);
+                }}
+              />
+              <Toggle label="Reading styles" checked={reading} onChange={setReading} />
             </div>
-            {streaming && (
-              <div className="stream-controls">
-                <label className="visually-hidden" htmlFor="speed">
-                  Replay speed
-                </label>
-                <select id="speed" value={speed} onChange={(e) => setSpeed(e.target.value)}>
-                  <option value="natural">Natural pace</option>
-                  <option value="slow">One character</option>
-                </select>
-                <button
-                  className="icon-button"
-                  disabled={playing || cursor >= source.length}
-                  aria-label="Advance one character"
-                  onClick={() => setCursor((n) => Math.min(source.length, n + 1))}
-                >
-                  <StepForward size={15} />
+            <div className="stream-bar">
+              <div>
+                <button type="button" className="replay-button" disabled={!source} onClick={replay}>
+                  {playing ? <Pause size={14} /> : <Play size={14} />}{' '}
+                  {playing
+                    ? 'Pause replay'
+                    : streaming && cursor < source.length
+                      ? 'Resume replay'
+                      : 'Replay as a stream'}
                 </button>
-                <button
-                  className="icon-button"
-                  aria-label="End replay and show all text"
-                  onClick={stopStream}
-                >
-                  <RotateCcw size={15} />
-                </button>
-                <span className="stream-progress">
-                  {Math.round((cursor / Math.max(1, source.length)) * 100)}%
+                <span className="replay-explanation">
+                  Watch the preview arrive a little at a time.
                 </span>
               </div>
-            )}
+              {streaming && (
+                <div className="stream-controls">
+                  <label className="visually-hidden" htmlFor="speed">
+                    Replay speed
+                  </label>
+                  <select id="speed" value={speed} onChange={(e) => setSpeed(e.target.value)}>
+                    <option value="natural">Natural pace</option>
+                    <option value="slow">One character</option>
+                  </select>
+                  <button
+                    className="icon-button"
+                    disabled={playing || cursor >= source.length}
+                    aria-label="Advance one character"
+                    onClick={() => setCursor((n) => Math.min(source.length, n + 1))}
+                  >
+                    <StepForward size={15} />
+                  </button>
+                  <button
+                    className="icon-button"
+                    aria-label="End replay and show all text"
+                    onClick={stopStream}
+                  >
+                    <RotateCcw size={15} />
+                  </button>
+                  <span className="stream-progress">
+                    {Math.round((cursor / Math.max(1, source.length)) * 100)}%
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
           <div
             className="inspection-reveal"
@@ -599,47 +534,41 @@ function App() {
           </div>
         </section>
 
-        <section className="principle" aria-label="Our point of view">
-          <span className="principle-mark" aria-hidden="true">
-            ‘
-          </span>
+        <section className="principle editorial" aria-labelledby="principle-title">
+          <h2 id="principle-title">A little care for the written word.</h2>
           <p>
-            A little care for
-            <br />
-            <em>the written word.</em>
+            An apostrophe is a small thing. So is the difference between something that works and
+            something that feels considered.
           </p>
-          <div>
-            <p>
-              An apostrophe is a small thing. So is the difference between something that works and
-              something that feels considered.
-            </p>
-            <p>
-              Curly brings that care to the text in your app. It respects code, keeps your words
-              intact, and leaves uncertain marks for you to decide.
-            </p>
-            <a href="#field-notes" className="underlined-link">
-              Read our field notes <ArrowUpRight size={15} />
-            </a>
-          </div>
+          <p>
+            Curly brings that care to the text in your app. It respects code, keeps your words
+            intact, and leaves uncertain marks for you to decide.
+          </p>
+          <a href="#field-notes" className="underlined-link">
+            Read our field notes <ArrowDown size={15} />
+          </a>
         </section>
 
-        <section id="install" className="install-section">
+        <HowItWorks />
+
+        <section id="install" className="install-section editorial" aria-labelledby="install-title">
           <div className="install-copy">
-            <h2>
-              Good type.
-              <br />
-              <em>Small package.</em>
-            </h2>
+            <h2 id="install-title">Good type. Small package.</h2>
             <p>Add Curly where your app renders prose. Your model, your interface, your words.</p>
             <div className="install-command">
+              <div className="install-command-heading">
+                <span>Install with npm</span>
+                <button
+                  type="button"
+                  className="text-button"
+                  aria-label="Copy install command"
+                  onClick={() => copy(installCommand, 'install')}
+                >
+                  <Copy size={15} />
+                  {copyState === 'install' ? 'Copied' : 'Copy install command'}
+                </button>
+              </div>
               <code>{installCommand}</code>
-              <button
-                className="icon-button"
-                aria-label="Copy npm install command"
-                onClick={() => copy(installCommand, 'install')}
-              >
-                {copyState === 'install' ? <Check size={17} /> : <Copy size={17} />}
-              </button>
             </div>
             <p className="install-footnote">
               {distributionLabel}
@@ -668,11 +597,13 @@ function App() {
                 <ChevronDown size={14} />
               </div>
               <button
-                className="icon-button"
+                type="button"
+                className="text-button"
                 aria-label="Copy integration code"
                 onClick={() => copy(snippet, 'snippet')}
               >
-                {copyState === 'snippet' ? <Check size={16} /> : <Copy size={16} />}
+                <Copy size={15} />
+                {copyState === 'snippet' ? 'Copied' : 'Copy code'}
               </button>
             </div>
             <pre>
@@ -682,37 +613,21 @@ function App() {
           </div>
         </section>
 
-        <section id="field-notes" className="field-notes">
+        <section id="field-notes" className="field-notes editorial" aria-labelledby="notes-title">
           <div>
-            <h2>
-              Small marks.
-              <br />
-              <em>Considered decisions.</em>
-            </h2>
+            <h2 id="notes-title">Small marks. Considered decisions.</h2>
             <p>What to know before you put Curly to work.</p>
           </div>
           <div className="notes-list">
-            <details open>
-              <summary>
-                What does Curly change?
-                <span>
-                  <Plus size={15} aria-hidden="true" />
-                </span>
-              </summary>
+            <Disclosure title="What does Curly change?" defaultOpen>
               <p>
                 Straight quotation marks become directional quotes. Contractions and possessives get
                 proper apostrophes. Enable primes for clear measurement notation, or ellipses for
                 three prose dots. Existing curly punctuation is preserved. English conventions are
                 supported in V1.
               </p>
-            </details>
-            <details>
-              <summary>
-                Will it touch my code?
-                <span>
-                  <Plus size={15} aria-hidden="true" />
-                </span>
-              </summary>
+            </Disclosure>
+            <Disclosure title="Will it touch my code?">
               <p>
                 The Markdown integration protects code blocks, inline code, HTML markup, and math
                 nodes. The HTML integration protects code elements and attributes. Mark exact HTML
@@ -720,88 +635,43 @@ function App() {
                 function. Pass prose to the plain-text API; use the integrations for structured
                 content.
               </p>
-            </details>
-            <details>
-              <summary>
-                How does streaming work?
-                <span>
-                  <Plus size={15} aria-hidden="true" />
-                </span>
-              </summary>
+            </Disclosure>
+            <Disclosure title="How does streaming work?">
               <p>
                 For Markdown, Curly works inside your renderer. The playground uses Streamdown for
                 its replay. An unfinished block is provisional and may change as more text arrives.
                 The separate prose stream utility buffers paragraphs and emits settled text; it does
                 not process JSON, SSE envelopes, or tool calls.
               </p>
-            </details>
-            <details>
-              <summary>
-                What happens to my text?
-                <span>
-                  <Plus size={15} aria-hidden="true" />
-                </span>
-              </summary>
+            </Disclosure>
+            <Disclosure title="What happens to my text?">
               <p>
                 The playground processes text in your browser. No account, model call, or text
-                upload is needed. Copy text takes the currently displayed reading preview; Copy
-                original source preserves your Markdown. Remote images in your input are not loaded.
+                upload is needed. “Copy text” copies the currently displayed reading preview. Your
+                original Markdown stays in the input, and remote images in it are not loaded.
               </p>
-            </details>
-            <details>
-              <summary>
-                Why doesn’t it change every mark?
-                <span>
-                  <Plus size={15} aria-hidden="true" />
-                </span>
-              </summary>
+            </Disclosure>
+            <Disclosure title="Why doesn’t it change every mark?">
               <p>
                 Curly tracks opening quotes within a paragraph, so <code>"Model 6"</code> closes as
                 a quotation. A bare <code>6"</code> has no opening quote to match and too little
                 context to identify a measurement. Curly leaves it alone. Add context, such as{' '}
-                <code>6" wide</code>, and the measurement becomes clear. “See changes” explains each
-                decision.
+                <code>6" wide</code>, and the measurement becomes clear. “Highlight changes”
+                explains each decision.
               </p>
-            </details>
-            <details>
-              <summary>
-                Can I use just the reading styles?
-                <span>
-                  <Plus size={15} aria-hidden="true" />
-                </span>
-              </summary>
+            </Disclosure>
+            <Disclosure title="Can I use just the reading styles?">
               <p>
                 Yes. Import <code>cowboy-curly/prose.css</code> and apply <code>curly-prose</code>{' '}
                 to a prose container. It adds line length, paragraph rhythm, heading balance, and
                 sensible overflow. It inherits your fonts and colors, and works independently of
                 punctuation conversion.
               </p>
-            </details>
+            </Disclosure>
           </div>
         </section>
       </main>
-      <footer>
-        <CurlyLogo label="Curly, back to top" />
-        <p>
-          Made with a little conviction.
-          <br />
-          <a href="https://cowboy.is">By Cowboy.</a>
-        </p>
-        <div>
-          <a href="https://github.com/calebduren/curly">
-            GitHub <ExternalLink size={13} />
-          </a>
-          <a href="https://github.com/calebduren/curly/releases">
-            Releases <ExternalLink size={13} />
-          </a>
-          <span>
-            © {new Date().getFullYear()}{' '}
-            <a className="author-link" href="https://calebduren.com">
-              Caleb Durenberger
-            </a>
-          </span>
-        </div>
-      </footer>
+      <Footer />
       <div className={'toast' + (notice ? ' visible' : '')} role="status">
         {notice}
       </div>

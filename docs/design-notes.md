@@ -16,13 +16,17 @@ The measurement sample demonstrates this distinction: `24" wide` can become `24�
 
 ## A restrained visual world
 
-Warm paper and brown-black ink tie the product to Cowboy without turning a writing tool into a costume. The intended pairing uses PP Kyoto for its expressive serif voice and PP Neue Montreal for the controls and explanations. It is available in the local design preview; the public build uses Fraunces and DM Sans while the supplied personal-use licenses are clarified. [Typography notes](typography.md) record the distinction. Monospace is reserved for editable source, code, and measurements.
+Desaturated warm-gray paper and brown-black ink tie the product to Cowboy without turning a writing tool into a costume. The intended pairing uses PP Kyoto for its expressive serif voice and PP Neue Montreal for the controls and explanations. It is available in the local design preview; the public build uses Fraunces and DM Sans while the supplied personal-use licenses are clarified. [Typography notes](typography.md) record the distinction. Monospace is reserved for editable source, code, and measurements.
 
 The logo is a small typographic character made from the font itself: `‘` for eyes, `˜` for a wink, and `˘` for a smile. CSS transitions let the quote squish and crossfade into the small tilde while the breve lifts and tilts toward it. The close is quick and the return softer; repeated pointer interaction retargets the current pose. The compact face greets the visitor and responds to pointer interaction, with a still version for reduced-motion preferences.
 
 The Serif / Sans serif control changes only the reading preview, including its headings, emphasis, and replay. It lets people judge the punctuation in either typographic voice while keeping Original / With Curly as a fair comparison in the same selected typeface.
 
-The desktop layout behaves like a type specimen with an attached control rail. Tonal surfaces and space define its regions, with few borders. Mobile stacks the source and reading view. The reading preview expands to fit ordinary samples, while long input and code scroll inside their own boundaries.
+The desktop playground pairs source and reading panes with attached switches and replay controls. Editorial sections use a centered column capped at 65ch. Body and interface text use 13, 15, and 17px, with no added tracking. Color separates the intro’s promise and supporting copy at the same size. Smaller screens stack the workspace; the reading preview keeps a stable height while long content scrolls locally. Highlights paint on a layer behind every glyph, so a quote’s background cannot obscure an adjacent comma.
+
+A dedicated “How it works” section makes installation a considered decision: it explains document boundaries, quote context, protected content, integration choices, streaming tradeoffs, measured bundle sizes, and known limits. The install command has its own labeled copy action. Field-note disclosures use short, reversible transitions for pointer interaction and respond immediately to the keyboard.
+
+The masthead keeps only the punctuation face. Attribution lives in the footer, above a faint ASCII desert with a brief passing tumbleweed. Both gestures respect reduced-motion preferences. The playground uses switches and text feedback instead of checkmark icons; its only copy action copies the visible reading preview.
 
 ## Streaming is a product decision
 
@@ -30,7 +34,7 @@ A quote at the end of an unfinished chunk may change meaning when the next chara
 
 ## Evidence, and its limits
 
-The repository includes fixtures, randomized idempotence and chunk-boundary checks, actual renderer tests, a clean package-consumer check, and a public CI workflow. The browser checks exercise editing, comparison, inspection, prime/ellipsis options, replay, copying, and export. [The performance report](../benchmarks/README.md) records the hardware, versions, inputs, and comparable library configurations.
+The repository includes fixtures, randomized idempotence and chunk-boundary checks, actual renderer tests, a clean package-consumer check, and a public CI workflow. The browser checks exercise editing, comparison, inspection, prime/ellipsis options, replay, and copying. Earlier releases also offered text export; the refined playground consolidates this into copying the visible preview. [The performance report](../benchmarks/README.md) records the hardware, versions, inputs, and comparable library configurations.
 
 This is engineering and interface verification, not a user study. There are no adoption numbers or task-success claims yet. The next useful research is to watch developers integrate the package into existing rendering pipelines and ask writers which ambiguous cases they want left alone.
 

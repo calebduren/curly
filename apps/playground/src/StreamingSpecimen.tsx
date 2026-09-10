@@ -1,6 +1,7 @@
 import { Streamdown, defaultRemarkPlugins } from 'streamdown';
 import remarkCurly from 'cowboy-curly/remark';
 import type { CurlyOptions } from 'cowboy-curly';
+import { TaskStatus } from './Controls';
 export default function StreamingSpecimen({
   source,
   options,
@@ -23,6 +24,7 @@ export default function StreamingSpecimen({
         ...(formatted ? [[remarkCurly, options] as [typeof remarkCurly, CurlyOptions]] : []),
       ]}
       components={{
+        input: ({ checked }) => <TaskStatus checked={checked === true} />,
         strong: ({ children }) => <strong>{children}</strong>,
         em: ({ children }) => <em>{children}</em>,
         img: ({ alt }) => <span className="omitted-image">[Image: {alt ?? 'remote media'}]</span>,
