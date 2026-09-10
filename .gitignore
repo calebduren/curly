@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.wrangler/
+.env*
+!.env.example
+*.tgz
+coverage/
+.DS_Store
+test-results/
+playwright-report/
+PRODUCT.md
+RELEASE.md
+.impeccable/
+scripts/cloudflare-inspect.mjs
+release/

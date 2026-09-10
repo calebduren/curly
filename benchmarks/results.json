@@ -1,0 +1,163 @@
+{
+  "date": "2026-09-10",
+  "runtime": "v26.7.0",
+  "cpu": "Apple M3 Max",
+  "versions": {
+    "cowboy-curly": "1.0.0",
+    "smartquotes": "2.3.2",
+    "punctilio": "5.4.4",
+    "retext-smartypants": "6.2.0"
+  },
+  "configurations": [
+    {
+      "name": "cowboy-curly",
+      "options": "defaults: quotes and apostrophes"
+    },
+    {
+      "name": "smartquotes",
+      "options": "defaults"
+    },
+    {
+      "name": "punctilio",
+      "options": "symbols/collapseSpaces/nbsp off; dashStyle none; American quotes"
+    },
+    {
+      "name": "retext-smartypants",
+      "options": "retext pipeline; dashes and ellipses off"
+    }
+  ],
+  "rounds": 9,
+  "bundle": [
+    {
+      "entry": "index",
+      "bytes": 4758,
+      "gzipBytes": 2334
+    },
+    {
+      "entry": "remark",
+      "bytes": 7544,
+      "gzipBytes": 3477
+    },
+    {
+      "entry": "rehype",
+      "bytes": 7521,
+      "gzipBytes": 3464
+    },
+    {
+      "entry": "stream",
+      "bytes": 5530,
+      "gzipBytes": 2671
+    }
+  ],
+  "timings": [
+    {
+      "library": "cowboy-curly",
+      "inputCodeUnits": 1024,
+      "medianMs": 0.0391,
+      "p95Ms": 0.0611,
+      "iterationsPerRound": 75
+    },
+    {
+      "library": "smartquotes",
+      "inputCodeUnits": 1024,
+      "medianMs": 0.0072,
+      "p95Ms": 0.0077,
+      "iterationsPerRound": 500
+    },
+    {
+      "library": "punctilio",
+      "inputCodeUnits": 1024,
+      "medianMs": 0.0999,
+      "p95Ms": 0.1775,
+      "iterationsPerRound": 28
+    },
+    {
+      "library": "retext-smartypants",
+      "inputCodeUnits": 1024,
+      "medianMs": 0.3595,
+      "p95Ms": 0.4317,
+      "iterationsPerRound": 21
+    },
+    {
+      "library": "cowboy-curly",
+      "inputCodeUnits": 10240,
+      "medianMs": 0.2342,
+      "p95Ms": 0.2452,
+      "iterationsPerRound": 37
+    },
+    {
+      "library": "smartquotes",
+      "inputCodeUnits": 10240,
+      "medianMs": 0.0611,
+      "p95Ms": 0.0676,
+      "iterationsPerRound": 141
+    },
+    {
+      "library": "punctilio",
+      "inputCodeUnits": 10240,
+      "medianMs": 0.987,
+      "p95Ms": 1.1001,
+      "iterationsPerRound": 7
+    },
+    {
+      "library": "retext-smartypants",
+      "inputCodeUnits": 10240,
+      "medianMs": 3.5251,
+      "p95Ms": 4.137,
+      "iterationsPerRound": 3
+    },
+    {
+      "library": "cowboy-curly",
+      "inputCodeUnits": 102400,
+      "medianMs": 2.3099,
+      "p95Ms": 2.6377,
+      "iterationsPerRound": 4
+    },
+    {
+      "library": "smartquotes",
+      "inputCodeUnits": 102400,
+      "medianMs": 0.5937,
+      "p95Ms": 0.6772,
+      "iterationsPerRound": 13
+    },
+    {
+      "library": "punctilio",
+      "inputCodeUnits": 102400,
+      "medianMs": 10.6169,
+      "p95Ms": 12.6132,
+      "iterationsPerRound": 1
+    },
+    {
+      "library": "retext-smartypants",
+      "inputCodeUnits": 102400,
+      "medianMs": 46.7359,
+      "p95Ms": 139.5481,
+      "iterationsPerRound": 1
+    }
+  ],
+  "adversarial": [
+    {
+      "case": "100k ordinary word",
+      "medianMs": 1.2218,
+      "p95Ms": 1.3104,
+      "iterationsPerRound": 7
+    },
+    {
+      "case": "99k adjacent quotes",
+      "medianMs": 20.2869,
+      "p95Ms": 22.4771,
+      "iterationsPerRound": 1
+    },
+    {
+      "case": "100k repeated at signs",
+      "medianMs": 4.8903,
+      "p95Ms": 5.2698,
+      "iterationsPerRound": 2
+    }
+  ],
+  "streaming": {
+    "medianMs": 3.6421,
+    "p95Ms": 4.3611,
+    "iterationsPerRound": 2
+  }
+}

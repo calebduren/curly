@@ -1,0 +1,39 @@
+{
+  "name": "curly-workspace",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w cowboy-curly && npm run build -w @curly/playground",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "dev": "npm run dev -w @curly/playground",
+    "bench": "node --import tsx scripts/benchmark.ts",
+    "check:package": "node scripts/check-package.mjs",
+    "check": "npm run build && npm run typecheck && npm test && npm run check:package"
+  },
+  "devDependencies": {
+    "@types/hast": "^3.0.0",
+    "@types/mdast": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "fast-check": "^4.3.0",
+    "prettier": "3.9.6",
+    "punctilio": "5.4.4",
+    "rehype-parse": "9.0.1",
+    "rehype-stringify": "10.0.1",
+    "retext": "9.0.0",
+    "retext-smartypants": "6.2.0",
+    "smartquotes": "2.3.2",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0",
+    "wrangler": "^4.0.0"
+  }
+}
