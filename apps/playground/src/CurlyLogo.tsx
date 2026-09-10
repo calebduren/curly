@@ -4,25 +4,32 @@ export function CurlyLogo({ label = 'Curly home' }: { label?: string }) {
   const link = useRef<HTMLAnchorElement>(null);
   const face = useRef<HTMLSpanElement>(null);
   const visible = useRef(false);
-  const playing = useRef(false);
+  const releaseTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const stop = useCallback(() => {
-    playing.current = false;
-    if (face.current) face.current.dataset.expression = 'rest';
+    clearTimeout(releaseTimer.current);
+    if (face.current) {
+      face.current.dataset.motion = 'off';
+      face.current.dataset.expression = 'rest';
+    }
   }, []);
 
   const wink = useCallback(() => {
     if (
       !face.current ||
       !visible.current ||
-      playing.current ||
       document.hidden ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
     )
       return;
 
-    playing.current = true;
+    clearTimeout(releaseTimer.current);
+    face.current.dataset.motion = 'on';
     face.current.dataset.expression = 'wink';
+    // Retarget the current pose; another press extends the wink without restarting it.
+    releaseTimer.current = setTimeout(() => {
+      if (face.current) face.current.dataset.expression = 'rest';
+    }, 320);
   }, []);
 
   useEffect(() => {
@@ -85,10 +92,8 @@ export function CurlyLogo({ label = 'Curly home' }: { label?: string }) {
         className="curly-face"
         aria-hidden="true"
         data-expression="rest"
+        data-motion="off"
         ref={face}
-        onAnimationEnd={(event) => {
-          if (event.animationName === 'curly-mouth-wink') stop();
-        }}
       >
         <span className="curly-eye curly-eye-left">‘</span>
         <span className="curly-eye curly-eye-right">

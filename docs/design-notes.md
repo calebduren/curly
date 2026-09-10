@@ -12,13 +12,15 @@ That focus is also a trust decision. Applying a global replacement to an AI resp
 
 The playground uses the same package that developers install. Visitors can edit a sentence, switch between original and formatted punctuation without changing the preview’s typeface, and select a mark to read why it changed. Preserved code and ambiguous marks are included in the inspector. The interface exposes the tradeoff instead of hiding behind an accuracy score.
 
-The measurement sample demonstrates this distinction: `24" wide` can become `24″ wide`, while `"Model 3"` remains a quotation and an isolated `6"` is left for the writer. These are authored examples, not a claim of perfect language understanding.
+The measurement sample demonstrates this distinction: `24" wide` can become `24″ wide`, while `"Model 6"` remains a quotation because its opening mark supplies context. Curly tracks unclosed opening quotes within each paragraph, including across inline formatting. A bare `6"` without an opening quote or a clear measurement cue is left for the writer. These are authored examples, not a claim of perfect language understanding.
 
 ## A restrained visual world
 
 Warm paper and brown-black ink tie the product to Cowboy without turning a writing tool into a costume. The intended pairing uses PP Kyoto for its expressive serif voice and PP Neue Montreal for the controls and explanations. It is available in the local design preview; the public build uses Fraunces and DM Sans while the supplied personal-use licenses are clarified. [Typography notes](typography.md) record the distinction. Monospace is reserved for editable source, code, and measurements.
 
-The logo is a small typographic character made from the font itself: `‘` for eyes, `˜` for a wink, and `˘` for a smile. CSS lets the quote squish and crossfade into the small tilde while the breve lifts and tilts toward it. The compact face greets the visitor and responds to pointer interaction, with a still version for reduced-motion preferences.
+The logo is a small typographic character made from the font itself: `‘` for eyes, `˜` for a wink, and `˘` for a smile. CSS transitions let the quote squish and crossfade into the small tilde while the breve lifts and tilts toward it. The close is quick and the return softer; repeated pointer interaction retargets the current pose. The compact face greets the visitor and responds to pointer interaction, with a still version for reduced-motion preferences.
+
+The Serif / Sans serif control changes only the reading preview, including its headings, emphasis, and replay. It lets people judge the punctuation in either typographic voice while keeping Original / With Curly as a fair comparison in the same selected typeface.
 
 The desktop layout behaves like a type specimen with an attached control rail. Tonal surfaces and space define its regions, with few borders. Mobile stacks the source and reading view. The reading preview expands to fit ordinary samples, while long input and code scroll inside their own boundaries.
 

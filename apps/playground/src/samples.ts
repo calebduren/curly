@@ -11,7 +11,7 @@ export const samples = [
     name: 'The particulars',
     short: 'Measurements',
     source:
-      '"Meet the Field Notes display."\n\nThe screen is 24" wide. Its stand is 1\' 6" tall. The label says "Model 3", and that last mark belongs to the quotation.\n\nWidth: 24"\n\nAn isolated 6"? We\'ll leave that one for you to decide.',
+      '"Meet the Field Notes display."\n\nThe screen is 24" wide. Its stand is 1\' 6" tall. The label says "Model 6", and the opening quote tells us where that last mark belongs.\n\nWidth: 24"\n\nOn its own: 6". No opening quote, no measurement context. We\'ll leave that one for you to decide.',
   },
   {
     id: 'code',

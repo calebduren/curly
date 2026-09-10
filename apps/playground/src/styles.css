@@ -336,8 +336,7 @@
     text-decoration: none;
   }
   .curly-face {
-    --face-gesture-duration: 720ms;
-    --face-gesture-ease: cubic-bezier(0.77, 0, 0.175, 1);
+    --face-gesture-ease: cubic-bezier(0.23, 1, 0.32, 1);
     position: relative;
     display: block;
     width: 1em;
@@ -370,75 +369,46 @@
     display: block;
     width: 100%;
     transform-origin: 50% 38%;
+    transition:
+      transform 240ms var(--face-gesture-ease),
+      opacity 180ms var(--face-gesture-ease);
+  }
+  .curly-eye-open {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
   }
   .curly-eye-closed {
     position: absolute;
     top: 0.2em;
     left: 0;
     opacity: 0;
+    transform: translateY(-0.015em) scale(0.95) rotate(-4deg);
   }
   .curly-mouth {
     top: 0.43em;
     left: 0.25em;
     width: 0.5em;
     transform-origin: 50% 25%;
+    transform: translate(0, 0) rotate(0deg);
+    transition: transform 440ms var(--face-gesture-ease);
   }
-  .curly-face[data-expression='wink'] .curly-eye-open,
-  .curly-face[data-expression='wink'] .curly-eye-closed,
-  .curly-face[data-expression='wink'] .curly-mouth {
-    animation-duration: var(--face-gesture-duration);
-    animation-timing-function: var(--face-gesture-ease);
-    animation-iteration-count: 1;
+  .curly-face[data-motion='off'] > span,
+  .curly-face[data-motion='off'] .curly-eye-right > span {
+    transition: none;
   }
   .curly-face[data-expression='wink'] .curly-eye-open {
-    animation-name: curly-eye-open;
+    opacity: 0;
+    transform: translateY(0.07em) scaleY(0.45);
+    transition-duration: 180ms, 140ms;
   }
   .curly-face[data-expression='wink'] .curly-eye-closed {
-    animation-name: curly-eye-closed;
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    transition-duration: 180ms, 140ms;
   }
   .curly-face[data-expression='wink'] .curly-mouth {
-    animation-name: curly-mouth-wink;
-  }
-  @keyframes curly-eye-open {
-    0%,
-    8%,
-    72%,
-    100% {
-      opacity: 1;
-      transform: translateY(0) scaleY(1);
-    }
-    24%,
-    50% {
-      opacity: 0;
-      transform: translateY(0.07em) scaleY(0.45);
-    }
-  }
-  @keyframes curly-eye-closed {
-    0%,
-    8%,
-    72%,
-    100% {
-      opacity: 0;
-      transform: translateY(-0.02em) scale(0.9) rotate(-8deg);
-    }
-    24%,
-    50% {
-      opacity: 1;
-      transform: translateY(0) scale(1) rotate(0deg);
-    }
-  }
-  @keyframes curly-mouth-wink {
-    0%,
-    100% {
-      transform: translate(0, 0) rotate(0deg);
-    }
-    32%,
-    50% {
-      transform: translate(0.02em, -0.03em) rotate(-18deg);
-    }
-    75% {
-      transform: translate(0.005em, 0) rotate(2deg);
-    }
+    transform: translate(0.02em, -0.03em) rotate(-18deg);
+    transition-duration: 280ms;
   }
   .wordmark-name {
     padding-bottom: 3px;
@@ -567,8 +537,16 @@
     white-space: nowrap;
   }
   .output-toolbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     justify-content: space-between;
     gap: 12px;
+  }
+  .typeface-switch {
+    justify-self: center;
+  }
+  .typeface-switch button {
+    padding-inline: 9px;
   }
   .segmented {
     display: inline-flex;
@@ -636,6 +614,16 @@
   .specimen h3 {
     font: 500 1.35em/1.2 var(--serif);
     margin-block: 1.1em 0.5em;
+  }
+  .specimen[data-typeface='sans'] {
+    font-family: var(--sans);
+    font-weight: 400;
+  }
+  .specimen[data-typeface='sans'] :is(h1, h2, h3, em) {
+    font-family: inherit;
+  }
+  .specimen[data-typeface='sans'] :is(h1, h2, h3, strong, b) {
+    font-weight: 600;
   }
   .specimen :is(h1, h2, h3):first-child {
     margin-top: 0;
@@ -1101,6 +1089,24 @@
 }
 
 @layer responsive {
+  @media (max-width: 1050px) {
+    .output-toolbar {
+      grid-template-columns: 1fr auto;
+      padding-block: 12px;
+      row-gap: 6px;
+    }
+    .preview-punctuation {
+      grid-area: 1 / 1;
+      justify-self: start;
+    }
+    .output-toolbar > .inspect-button {
+      grid-area: 1 / 2;
+    }
+    .typeface-switch {
+      grid-area: 2 / 1 / 3 / -1;
+      justify-self: start;
+    }
+  }
   @media (min-width: 1500px) {
     .introduction {
       padding-top: 65px;

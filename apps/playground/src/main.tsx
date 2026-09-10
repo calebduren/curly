@@ -114,6 +114,7 @@ function App() {
   const [formatted, setFormatted] = useState(true);
   const [inspect, setInspect] = useState(false);
   const [reading, setReading] = useState(false);
+  const [typeface, setTypeface] = useState<'serif' | 'sans'>('serif');
   const [selected, setSelected] = useState<string | null>(null);
   const [playing, setPlaying] = useState(false);
   const [streaming, setStreaming] = useState(false);
@@ -294,7 +295,11 @@ function App() {
             </div>
             <div className="output-pane">
               <div className="pane-toolbar output-toolbar">
-                <div className="segmented" aria-label="Preview typography">
+                <div
+                  className="segmented preview-punctuation"
+                  role="group"
+                  aria-label="Preview punctuation"
+                >
                   <button
                     type="button"
                     aria-pressed={!formatted}
@@ -310,6 +315,26 @@ function App() {
                     <span className="tiny-quote" aria-hidden="true">
                       ”
                     </span>
+                  </button>
+                </div>
+                <div
+                  className="segmented typeface-switch"
+                  role="group"
+                  aria-label="Reading typeface"
+                >
+                  <button
+                    type="button"
+                    aria-pressed={typeface === 'serif'}
+                    onClick={() => setTypeface('serif')}
+                  >
+                    Serif
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={typeface === 'sans'}
+                    onClick={() => setTypeface('sans')}
+                  >
+                    Sans serif
                   </button>
                 </div>
                 <button
@@ -332,6 +357,7 @@ function App() {
               <div className={'specimen-wrap' + (reading ? ' reading-on' : '')}>
                 <div
                   ref={outputRef}
+                  data-typeface={typeface}
                   className={
                     'specimen' + (reading ? ' curly-prose' : '') + (inspect ? ' inspecting' : '')
                   }
@@ -730,10 +756,11 @@ function App() {
                 </span>
               </summary>
               <p>
-                Typography has ambiguities. An isolated <code>6"</code> could be a measurement or
-                the end of a quotation. Curly uses context where it can, and leaves uncertain cases
-                alone. “See changes” makes that judgment visible. You can always supply the intended
-                Unicode character yourself.
+                Curly tracks opening quotes within a paragraph, so <code>"Model 6"</code> closes as
+                a quotation. A bare <code>6"</code> has no opening quote to match and too little
+                context to identify a measurement. Curly leaves it alone. Add context, such as{' '}
+                <code>6" wide</code>, and the measurement becomes clear. “See changes” explains each
+                decision.
               </p>
             </details>
             <details>

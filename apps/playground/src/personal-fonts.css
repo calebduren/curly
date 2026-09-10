@@ -50,6 +50,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('../.local/fonts/PPNeueMontreal-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('../.local/fonts/PPNeueMontreal-SemiboldItalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --serif: 'PP Kyoto', Georgia, serif;
   --sans: 'PP Neue Montreal', Arial, sans-serif;
@@ -92,4 +108,16 @@ em,
 
 .notes-list summary > span {
   font-weight: 400;
+}
+
+.specimen[data-typeface='sans'] {
+  font-weight: 400;
+}
+
+.specimen[data-typeface='sans'] :is(h1, h2, h3, strong, b) {
+  font-weight: 600;
+}
+
+.specimen[data-typeface='sans'] em {
+  font-weight: inherit;
 }
