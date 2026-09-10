@@ -38,6 +38,7 @@ import { samples } from './samples';
 import { inspectMarkdown, integrationSnippet } from './model';
 import { ReplayBoundary } from './ReplayBoundary';
 import { installCommand, distributionLabel } from './distribution';
+import { CurlyLogo } from './CurlyLogo';
 
 const StreamingSpecimen = lazy(() => import('./StreamingSpecimen'));
 const defaults = { primes: false, ellipses: false };
@@ -214,9 +215,7 @@ function App() {
         Skip to playground
       </a>
       <header className="masthead" id="top">
-        <a className="wordmark" href="#top" aria-label="Curly home">
-          Curly<span aria-hidden="true">”</span>
-        </a>
+        <CurlyLogo />
         <a className="cowboy" href="https://cowboy.is">
           A little something by <strong>Cowboy</strong>
           <ArrowUpRight size={14} />
@@ -755,9 +754,7 @@ function App() {
         </section>
       </main>
       <footer>
-        <a className="wordmark" href="#top">
-          Curly<span aria-hidden="true">”</span>
-        </a>
+        <CurlyLogo label="Curly, back to top" />
         <p>
           Made with a little conviction.
           <br />
@@ -784,7 +781,11 @@ function App() {
     </>
   );
 }
-createRoot(document.getElementById('root')!).render(
+const root: ReturnType<typeof createRoot> =
+  import.meta.hot?.data.root ?? createRoot(document.getElementById('root')!);
+if (import.meta.hot) import.meta.hot.data.root = root;
+
+root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,

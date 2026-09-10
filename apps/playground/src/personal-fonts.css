@@ -4,16 +4,16 @@
 
 @font-face {
   font-family: 'PP Kyoto';
-  src: url('../.local/fonts/PPKyoto-Light.otf') format('opentype');
-  font-weight: 300;
+  src: url('../.local/fonts/PPKyoto-Extrabold.otf') format('opentype');
+  font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: 'PP Kyoto';
-  src: url('../.local/fonts/PPKyoto-LightItalic.otf') format('opentype');
-  font-weight: 300;
+  src: url('../.local/fonts/PPKyoto-ExtraboldItalic.otf') format('opentype');
+  font-weight: 800;
   font-style: italic;
   font-display: swap;
 }
@@ -62,18 +62,22 @@ em,
 .principle > p,
 .principle-mark,
 .decision-glyph {
-  font-weight: 300;
+  font-weight: 500;
+}
+
+.tiny-quote,
+.rule b {
+  font-weight: 500;
 }
 
 .wordmark,
-.tiny-quote,
-.rule b,
 .specimen h1,
 .specimen h2,
 .specimen h3,
 .specimen strong,
-.specimen b {
-  font-weight: 500;
+.specimen b,
+.specimen :is(strong, b) em {
+  font-weight: 800;
 }
 
 .intro-copy p:first-child,

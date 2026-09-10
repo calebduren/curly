@@ -16,9 +16,11 @@ The measurement sample demonstrates this distinction: `24" wide` can become `24â
 
 ## A restrained visual world
 
-Warm chalk, ink, and warm orange brown tie the product to Cowboy without turning a writing tool into a costume. The intended pairing uses PP Kyoto for its expressive serif voice and PP Neue Montreal for the controls and explanations. It is available in the local design preview; the public build uses Fraunces and DM Sans while the supplied personal-use licenses are clarified. [Typography notes](typography.md) record the distinction. Monospace is reserved for editable source, code, and measurements.
+Warm paper and brown-black ink tie the product to Cowboy without turning a writing tool into a costume. The intended pairing uses PP Kyoto for its expressive serif voice and PP Neue Montreal for the controls and explanations. It is available in the local design preview; the public build uses Fraunces and DM Sans while the supplied personal-use licenses are clarified. [Typography notes](typography.md) record the distinction. Monospace is reserved for editable source, code, and measurements.
 
-The desktop layout behaves like a type specimen with an attached control rail. Mobile stacks the source and reading view. The reading preview expands to fit ordinary samples, while long input and code scroll inside their own boundaries.
+The logo is a small typographic character: two quotes for eyes and a parenthesis for a smile. A brief wink morphs one eye into a tilde while the smile lifts and tilts. It greets the visitor and responds to pointer interaction, with a still version for reduced-motion preferences.
+
+The desktop layout behaves like a type specimen with an attached control rail. Tonal surfaces and space define its regions, with few borders. Mobile stacks the source and reading view. The reading preview expands to fit ordinary samples, while long input and code scroll inside their own boundaries.
 
 ## Streaming is a product decision
 

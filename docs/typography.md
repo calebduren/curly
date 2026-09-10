@@ -1,13 +1,13 @@
 # Playground typography
 
-The local design preview pairs PP Kyoto Light (300) and Medium (500), with their real italics, with PP Neue Montreal Regular (400) and Semibold (600). DM Mono remains the source/code face. The supplied OTF files are used unchanged, with `font-display: swap` and no synthetic weights or italics.
+The local design preview pairs PP Kyoto Medium (500) and Extrabold (800), with their real italics, with PP Neue Montreal Regular (400) and Semibold (600). DM Mono remains the source/code face. The supplied OTF files are used unchanged, with `font-display: swap` and no synthetic weights or italics.
 
 ## Local preview
 
 Obtain the fonts directly from [Pangram Pangram](https://pangrampangram.com/), then put these files in `apps/playground/.local/fonts/`:
 
-- `PPKyoto-Light.otf`
-- `PPKyoto-LightItalic.otf`
+- `PPKyoto-Extrabold.otf`
+- `PPKyoto-ExtraboldItalic.otf`
 - `PPKyoto-Medium.otf`
 - `PPKyoto-MediumItalic.otf`
 - `PPNeueMontreal-Regular.otf`
