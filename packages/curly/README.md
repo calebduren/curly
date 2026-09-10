@@ -7,7 +7,7 @@ Curly turns straight quotation marks and apostrophes into considered punctuation
 [Playground](https://cowboy-curly.caleb-9b2.workers.dev/curly/) · [Source](https://github.com/calebduren/curly) · [Measurements](https://github.com/calebduren/curly/tree/main/benchmarks)
 
 ```sh
-npm install https://github.com/calebduren/curly/releases/download/v1.0.0/cowboy-curly-1.0.0.tgz
+npm install https://github.com/calebduren/curly/releases/download/v1.0.1/cowboy-curly-1.0.1.tgz
 ```
 
 The tested release archive is installable now. The shorter registry command, `npm install cowboy-curly`, will become available after npm publication. Imports remain `cowboy-curly` with either distribution.
@@ -159,4 +159,4 @@ The repository includes a playground, fixtures, randomized invariant tests, real
 
 Curly shares a long tradition with SmartyPants, smartquotes, retext-smartypants, and other typography tools. [Punctilio](https://github.com/AlexanderMattTurner/punctilio) offers broader typography and localization. Curly’s focus is a restrained, explainable layer for prose in modern interfaces.
 
-MIT © 2026 Caleb Duren.
+MIT © 2026 [Caleb Durenberger](https://calebduren.com).

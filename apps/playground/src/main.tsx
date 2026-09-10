@@ -1,4 +1,13 @@
-import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  createContext,
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { createRoot } from 'react-dom/client';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -44,6 +53,60 @@ const kindNames: Record<string, string> = {
   ellipsis: 'Ellipsis',
   protected: 'Kept exact',
   ambiguous: 'Left for you',
+};
+
+const InspectionContext = createContext<{
+  inspect: boolean;
+  selected: string | null;
+  select: (id: string) => void;
+}>({ inspect: false, selected: null, select: () => {} });
+
+function ChangeMark({
+  node,
+  children,
+}: React.ComponentProps<'mark'> & { node?: { properties?: Record<string, unknown> } }) {
+  const { inspect, selected, select } = useContext(InspectionContext);
+  const id = String(node?.properties?.dataCurlyId ?? '');
+  const reason = String(node?.properties?.dataCurlyReason ?? 'Punctuation change');
+  return (
+    <span
+      className={'change-mark' + (selected === id ? ' selected' : '')}
+      role={inspect ? 'button' : undefined}
+      tabIndex={inspect ? 0 : undefined}
+      aria-label={inspect ? reason : undefined}
+      aria-pressed={inspect ? selected === id : undefined}
+      onClick={() => {
+        if (inspect) select(id);
+      }}
+      onKeyDown={(event) => {
+        if (inspect && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault();
+          select(id);
+        }
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function ProseLink({ children, node, ...props }: React.ComponentProps<'a'> & { node?: unknown }) {
+  const { inspect } = useContext(InspectionContext);
+  return inspect ? (
+    <span className="inspection-link">{children}</span>
+  ) : (
+    <a {...props} target="_blank" rel="noreferrer">
+      {children}
+    </a>
+  );
+}
+
+const markComponents = {
+  mark: ChangeMark,
+  img: ({ alt }: React.ComponentProps<'img'>) => (
+    <span className="omitted-image">[Image: {alt ?? 'remote media'}]</span>
+  ),
+  a: ProseLink,
 };
 
 function App() {
@@ -147,39 +210,6 @@ function App() {
     URL.revokeObjectURL(url);
     setNotice('Your formatted text was downloaded.');
   }
-  const markComponents = useMemo(
-    () => ({
-      mark: ({
-        node,
-        children,
-      }: React.ComponentProps<'mark'> & { node?: { properties?: Record<string, unknown> } }) => {
-        const id = String(node?.properties?.dataCurlyId ?? '');
-        const reason = String(node?.properties?.dataCurlyReason ?? 'Punctuation change');
-        return (
-          <button
-            type="button"
-            className={'change-mark' + (selected === id ? ' selected' : '')}
-            aria-label={reason}
-            onClick={() => setSelected(id)}
-          >
-            {children}
-          </button>
-        );
-      },
-      img: ({ alt }: React.ComponentProps<'img'>) => (
-        <span className="omitted-image">[Image: {alt ?? 'remote media'}]</span>
-      ),
-      a: ({ children, node, ...props }: React.ComponentProps<'a'> & { node?: unknown }) =>
-        inspect ? (
-          <span className="inspection-link">{children}</span>
-        ) : (
-          <a {...props} target="_blank" rel="noreferrer">
-            {children}
-          </a>
-        ),
-    }),
-    [selected, inspect],
-  );
 
   return (
     <>
@@ -191,7 +221,7 @@ function App() {
           Curly<span aria-hidden="true">”</span>
         </a>
         <a className="cowboy" href="https://cowboy.is">
-          A LITTLE SOMETHING BY <strong>COWBOY</strong>
+          A little something by <strong>Cowboy</strong>
           <ArrowUpRight size={14} />
         </a>
         <nav aria-label="Main navigation">
@@ -291,6 +321,8 @@ function App() {
                   className={'inspect-button' + (inspect ? ' active' : '')}
                   aria-label="See changes"
                   aria-pressed={inspect}
+                  aria-expanded={inspect}
+                  aria-controls="inspection"
                   disabled={!formatted || streaming}
                   onClick={() => {
                     setInspect(!inspect);
@@ -304,7 +336,9 @@ function App() {
               <div className={'specimen-wrap' + (reading ? ' reading-on' : '')}>
                 <div
                   ref={outputRef}
-                  className={'specimen' + (reading ? ' curly-prose' : '')}
+                  className={
+                    'specimen' + (reading ? ' curly-prose' : '') + (inspect ? ' inspecting' : '')
+                  }
                   aria-label={formatted ? 'Formatted reading preview' : 'Original reading preview'}
                 >
                   {!shown ? (
@@ -325,23 +359,25 @@ function App() {
                       </Suspense>
                     </ReplayBoundary>
                   ) : (
-                    <Markdown
-                      remarkPlugins={[
-                        remarkGfm,
-                        remarkMath,
-                        ...(formatted
-                          ? [
-                              [remarkCurly, { ...options, annotate: inspect }] as [
-                                typeof remarkCurly,
-                                TreeOptions,
-                              ],
-                            ]
-                          : []),
-                      ]}
-                      components={markComponents}
-                    >
-                      {shown}
-                    </Markdown>
+                    <InspectionContext.Provider value={{ inspect, selected, select: setSelected }}>
+                      <Markdown
+                        remarkPlugins={[
+                          remarkGfm,
+                          remarkMath,
+                          ...(formatted
+                            ? [
+                                [remarkCurly, { ...options, annotate: true }] as [
+                                  typeof remarkCurly,
+                                  TreeOptions,
+                                ],
+                              ]
+                            : []),
+                        ]}
+                        components={markComponents}
+                      >
+                        {shown}
+                      </Markdown>
+                    </InspectionContext.Provider>
                   )}
                   {playing && <span className="stream-caret" aria-label="Replaying text" />}
                 </div>
@@ -466,71 +502,79 @@ function App() {
               </div>
             )}
           </div>
-          {inspect && (
-            <div className="inspection-panel">
-              <div className="inspection-heading">
-                <h3>A closer look</h3>
-                <span>Select a mark in the preview or a decision below.</span>
-                <button
-                  className="icon-button"
-                  aria-label="Close inspection"
-                  onClick={() => {
-                    setInspect(false);
-                    setSelected(null);
-                  }}
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <div className="decision-list">
-                {report.decisions.length ? (
-                  report.decisions.map((d, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      className={
-                        'decision' + (selected === d.block + ':' + d.start ? ' selected' : '')
-                      }
-                      onClick={() => setSelected(d.block + ':' + d.start)}
-                    >
-                      <span className="decision-glyph">
-                        {d.kind === 'protected' ? (
-                          <Terminal size={15} />
-                        ) : (
-                          <>
-                            {d.original}
-                            <span>→</span>
-                            {d.replacement}
-                          </>
+          <div
+            className="inspection-reveal"
+            id="inspection"
+            data-open={inspect}
+            aria-hidden={!inspect}
+            inert={!inspect}
+          >
+            <div className="inspection-clip">
+              <div className="inspection-panel">
+                <div className="inspection-heading">
+                  <h3>A closer look</h3>
+                  <span>Select a mark in the preview or a decision below.</span>
+                  <button
+                    className="icon-button"
+                    aria-label="Close inspection"
+                    onClick={() => {
+                      setInspect(false);
+                      setSelected(null);
+                    }}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                <div className="decision-list">
+                  {report.decisions.length ? (
+                    report.decisions.map((d, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        className={
+                          'decision' + (selected === d.block + ':' + d.start ? ' selected' : '')
+                        }
+                        onClick={() => setSelected(d.block + ':' + d.start)}
+                      >
+                        <span className="decision-glyph">
+                          {d.kind === 'protected' ? (
+                            <Terminal size={15} />
+                          ) : (
+                            <>
+                              {d.original}
+                              <span>→</span>
+                              {d.replacement}
+                            </>
+                          )}
+                        </span>
+                        <span>{kindNames[d.kind]}</span>
+                      </button>
+                    ))
+                  ) : (
+                    <p>No punctuation decisions to make. Your words are ready.</p>
+                  )}
+                </div>
+                <div className="decision-detail" aria-live="polite">
+                  {current ? (
+                    <>
+                      <strong>{kindNames[current.kind]}.</strong> {current.reason}
+                      <code>
+                        {current.context.slice(
+                          Math.max(0, current.start - 30),
+                          Math.min(current.context.length, current.end + 30),
                         )}
-                      </span>
-                      <span>{kindNames[d.kind]}</span>
-                    </button>
-                  ))
-                ) : (
-                  <p>No punctuation decisions to make. Your words are ready.</p>
-                )}
-              </div>
-              <div className="decision-detail" aria-live="polite">
-                {current ? (
-                  <>
-                    <strong>{kindNames[current.kind]}.</strong> {current.reason}
-                    <code>
-                      {current.context.slice(
-                        Math.max(0, current.start - 30),
-                        Math.min(current.context.length, current.end + 30),
-                      )}
-                    </code>
-                  </>
-                ) : (
-                  <p>
-                    Apostrophes, quotation marks, and primes have different jobs. Curly pays
-                    attention to the company they keep.
-                  </p>
-                )}
+                      </code>
+                    </>
+                  ) : (
+                    <p>
+                      Apostrophes, quotation marks, and primes have different jobs. Curly pays
+                      attention to the company they keep.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
-          )}
+          </div>
         </section>
 
         <section className="principle" aria-label="Our point of view">
@@ -729,7 +773,12 @@ function App() {
           <a href="https://github.com/calebduren/curly/releases">
             Releases <ExternalLink size={13} />
           </a>
-          <span>© {new Date().getFullYear()} Caleb Duren</span>
+          <span>
+            © {new Date().getFullYear()}{' '}
+            <a className="author-link" href="https://calebduren.com">
+              Caleb Durenberger
+            </a>
+          </span>
         </div>
       </footer>
       <div className={'toast' + (notice ? ' visible' : '')} role="status">

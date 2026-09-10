@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+- Correct creator attribution to Caleb Durenberger and link to calebduren.com.
+
+The typography engine and public APIs are unchanged. The accompanying playground improves inspection layout, keyboard focus, and visual styling.
+
 ## 1.0.0
 
 - English curly quotes and apostrophes with contextual, inspectable decisions.

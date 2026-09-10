@@ -53,7 +53,9 @@ const versions: Record<string, string> = {};
 for (const c of configs)
   versions[c.name] =
     c.name === 'cowboy-curly'
-      ? '1.0.0'
+      ? JSON.parse(
+          await readFile(new URL('../packages/curly/package.json', import.meta.url), 'utf8'),
+        ).version
       : JSON.parse(
           await readFile(
             new URL('../node_modules/' + c.name + '/package.json', import.meta.url),

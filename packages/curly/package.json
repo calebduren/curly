@@ -1,10 +1,10 @@
 {
   "name": "cowboy-curly",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Thoughtful, inspectable typography for prose and AI interfaces. By Cowboy.",
   "type": "module",
   "license": "MIT",
-  "author": "Caleb Duren",
+  "author": "Caleb Durenberger (https://calebduren.com)",
   "homepage": "https://cowboy.is/curly/",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

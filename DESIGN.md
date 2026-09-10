@@ -8,8 +8,9 @@ colors:
   muted: "#69685e"
   rule: "#d9d6cb"
   soft: "#ebe8df"
-  red: "#ac3828"
-  red-wash: "#f6e6db"
+  accent: "#985521"
+  accent-wash: "#f3e6d7"
+  selection: "#ead8bc"
   green: "#416c51"
 typography:
   display:
@@ -78,7 +79,7 @@ components:
     width: "32px"
     height: "36px"
   button-replay:
-    textColor: "{colors.red}"
+    textColor: "{colors.accent}"
     padding: "8px 0"
     height: "40px"
   preview-switch:
@@ -106,10 +107,10 @@ components:
     padding: "6px 10px"
     height: "36px"
   change-mark:
-    backgroundColor: "#f1dccc"
-    textColor: "{colors.red}"
+    backgroundColor: "#f3e6d7"
+    textColor: "{colors.accent}"
     rounded: "{rounded.mark}"
-    padding: "0 1px"
+    padding: "0"
   code-panel:
     backgroundColor: "{colors.ink}"
     textColor: "#f1eee3"
@@ -125,7 +126,7 @@ components:
 
 **Creative North Star: "A Contemporary Type Specimen"**
 
-Curly pairs expressive serif letters with precise, quiet controls. Warm chalk, dark ink, and proofreader red carry a restrained Western print influence. The material is a flat reading sheet defined by typography, space, and fine rules.
+Curly pairs expressive serif letters with precise, quiet controls. Warm chalk, dark ink, and warm orange brown carry a restrained Western print influence. The material is a flat reading sheet defined by typography, space, and fine rules.
 
 Punctuation is the signature: a lifted closing quote in the wordmark, italic emphasis in headings, and inspectable marks within real text. Generous editorial spacing surrounds a denser working area. Motion clarifies state and user-initiated replay.
 
@@ -135,15 +136,15 @@ Punctuation is the signature: a lifted closing quote in the wordmark, italic emp
 - Warm tonal surfaces with small proofreader accents.
 - Visible, labeled controls attached to the content they affect.
 
-This document records the implemented values in the [stylesheet](apps/playground/src/styles.css#L38) and [playground](apps/playground/src/main.tsx#L25). The frontmatter is the token reference; component dimensions describe the desktop baseline and may be minimum sizes in CSS.
+This document records the implemented values in the [stylesheet](apps/playground/src/styles.css#L38) and [playground](apps/playground/src/main.tsx#L34). The frontmatter is the token reference; component dimensions describe the desktop baseline and may be minimum sizes in CSS.
 
 ## Colors
 
 ### Primary
 
-**Proofreader red** (`red`) emphasizes marks, italic display text, active inspection, caret color, and focus. **Red wash** (`red-wash`) supports selected and hovered decisions.
+**Warm orange brown** (`accent`) emphasizes marks, italic display text, active inspection, caret color, and focus. **Soft orange wash** (`accent-wash`) supports selected and hovered decisions.
 
-**The Marks Rule.** Use red to direct attention to punctuation or an interaction state; keep large reading surfaces neutral.
+**The Marks Rule.** Use orange brown to direct attention to punctuation or an interaction state; keep large reading surfaces neutral.
 
 ### Secondary
 
@@ -155,13 +156,13 @@ This document records the implemented values in the [stylesheet](apps/playground
 
 ## Typography
 
-Fraunces Variable supplies the identity, headings, italics, and reading specimen. DM Sans Variable supplies controls and explanations. DM Mono (400) supplies editable source and integration code; code ligatures are disabled. The font files are [bundled through Fontsource](apps/playground/src/main.tsx#L25).
+Fraunces Variable supplies the identity, headings, italics, and reading specimen. DM Sans Variable supplies controls and explanations. DM Mono (400) supplies editable source and integration code; code ligatures are disabled. The font files are [bundled through Fontsource](apps/playground/src/main.tsx#L34).
 
-- **Display and headline:** balanced serif lines with tight tracking. Italic emphasis uses weight 400 and proofreader red in the main promise.
+- **Display and headline:** balanced serif lines with tight tracking. Italic emphasis uses weight 400 and warm orange brown in the main promise.
 - **Body:** the reading specimen uses the frontmatter `body` role. Its paragraphs have a one-em bottom margin; specimen headings use weight 500 at 1.35em.
 - **Interface body and labels:** regular sans-serif annotations; stronger labels use weights 500–600. Most controls sit at 11–13px.
 - **Source and code:** airy monospace line spacing separates literal text from the reading preview. Integration code uses 12px, becoming 11px on smaller layouts.
-- **Wordmark:** compact, weighty serif lettering with a red closing quote raised above the baseline. It reduces to 34px on mobile.
+- **Wordmark:** compact, weighty serif lettering with an orange brown closing quote raised above the baseline. It reduces to 34px on mobile.
 
 **The Fair Comparison Rule.** Original and With Curly share the same specimen typeface and container. Optional reading styles affect the same preview independently of punctuation conversion.
 
@@ -187,15 +188,15 @@ Sheets, code panels, fields, and section rules are square. Small corners soften 
 
 ## Components
 
-- **Actions:** text and icon buttons inherit their context. Text actions turn red on hover; icon actions also gain a soft background. Replay starts red and underlines on hover. Icon targets are at least 32px by 36px; text actions are at least 36px high and replay is at least 40px high. Disabled buttons use 0.45 opacity and a disabled cursor.
-- **Focus and state:** interactive elements use a red two-pixel outline with a four-pixel offset. Source editing moves the outline inside the field. Keep native labels, checked/pressed states, and explicit names when visible labels disappear.
-- **Source field and selectors:** the source is a borderless, resizable monospace textarea with a red caret and an attached helper/count footer. Native selects use an understated label and chevron. Native checkboxes use red accents.
+- **Actions:** text and icon buttons inherit their context. Text actions turn orange brown on hover; icon actions also gain a soft background. Replay starts orange brown and underlines on hover. Icon targets are at least 32px by 36px; text actions are at least 36px high and replay is at least 40px high. Disabled buttons use 0.45 opacity and a disabled cursor.
+- **Focus and state:** interactive elements use an orange brown two-pixel outline with a four-pixel offset. Source editing moves the outline inside the field. Keep native labels, checked/pressed states, and explicit names when visible labels disappear.
+- **Source field and selectors:** the source is a borderless, resizable monospace textarea with an orange brown caret and an attached helper/count footer. Native selects use an understated label and chevron. Native checkboxes use orange brown accents.
 - **Comparison and inspection:** the soft comparison group contains Original and With Curly; the selected button is a lighter sheet. See changes is a nearby pressed-state action. At intermediate widths it becomes an icon while retaining its accessible name.
-- **Annotated marks and decision chips:** an inspected mark stays inline with its sentence, carries a red underline and warm highlight, and becomes red with light text on hover or selection. Decision chips pair the glyph change with a plain-language label; selection uses red text, border, and wash. Selecting either reveals the explanation below.
-- **Navigation:** small sans-serif anchor links sit in a quiet masthead alongside the serif wordmark and Cowboy attribution. Links turn red on hover; the mobile masthead retains the identity and attribution.
+- **Annotated marks and decision chips:** annotation spans remain in the text in both reading and inspection states. Highlighting changes paint only, with no padding, margin, or border to alter line boxes or wrapping. Inspection adds keyboard button semantics; selection preserves focus. Decision chips pair the glyph change with a plain-language label. Selecting either reveals the explanation below.
+- **Navigation:** small sans-serif anchor links sit in a quiet masthead alongside the serif wordmark and Cowboy attribution. Links turn orange brown on hover; the mobile masthead retains the identity and attribution.
 - **Integration panel:** a square ink block contains a native integration selector, copy action, locally scrolling monospace code, and a muted note. The selected punctuation options also determine the shown snippet.
 - **Field notes:** native disclosure rows use fine separators and a plus that turns to a cross when open. The explanation stays under its question with a maximum line length of 66ch.
-- **Feedback and motion:** clipboard/download feedback appears in a bottom-centered status toast. Color/background transitions last 150ms; the toast uses 180ms opacity and a 12px rise. Only an active replay blinks its red caret (1s, step-end). Reduced-motion preferences disable transitions, animation, and smooth scrolling.
+- **Feedback and motion:** clipboard/download feedback appears in a bottom-centered status toast. General color/background transitions last 150ms; punctuation highlights fade over 180ms. The inspection panel opens below the stable preview over 240ms, using a grid-row transition and a 180ms fade. Its collapsed content is inert and hidden from assistive technology. The toast uses 180ms opacity and a 12px rise. Only an active replay blinks its orange brown caret (1s, step-end). Reduced-motion preferences disable transitions, animation, and smooth scrolling.
 
 ## Do's and Don'ts
 
@@ -204,6 +205,7 @@ Sheets, code panels, fields, and section rules are square. Small corners soften 
 - Do make punctuation, real text, and its explanations the expressive content.
 - Do keep related controls attached to their source, preview, or code region.
 - Do preserve native control semantics, visible focus, and accessible names at every breakpoint.
+- Do use sentence case for labels and brand attribution. Credit Caleb Durenberger and link his name to calebduren.com.
 - Do keep long code and tables scrolling inside their own region.
 
 ### Don't
@@ -212,3 +214,4 @@ Sheets, code panels, fields, and section rules are square. Small corners soften 
 - Don't turn the flat sheet into a stack of rounded, elevated cards.
 - Don't add decorative continuous motion or simulated paper texture.
 - Don't use formatting counts or samples as invented performance or adoption claims.
+- Don't use all-uppercase styling. A custom logo will be supplied by Caleb; preserve the current wordmark until then.

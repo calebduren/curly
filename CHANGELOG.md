@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.1
+
+- Correct creator attribution to Caleb Durenberger and link to calebduren.com.
+- Keep playground text geometry stable when inspection opens; support keyboard selection without losing focus.
+- Animate inspection highlights and the explanation panel, respecting reduced motion.
+- Use an orange-brown accent and sentence-case brand attribution.
+
+The typography engine and public APIs are unchanged.
+
 ## 1.0.0
 
 - English curly quotes and apostrophes with contextual, inspectable decisions.
