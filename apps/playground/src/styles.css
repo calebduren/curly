@@ -325,7 +325,7 @@
   .wordmark {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     min-height: 44px;
     flex-shrink: 0;
     font-family: var(--serif);
@@ -336,11 +336,109 @@
     text-decoration: none;
   }
   .curly-face {
+    --face-gesture-duration: 720ms;
+    --face-gesture-ease: cubic-bezier(0.77, 0, 0.175, 1);
+    position: relative;
     display: block;
-    width: 44px;
-    height: 44px;
-    overflow: visible;
+    width: 1em;
+    height: 1em;
     flex: 0 0 auto;
+    font: 800 36px/1 var(--serif);
+    letter-spacing: 0;
+    user-select: none;
+    pointer-events: none;
+  }
+  .curly-eye,
+  .curly-mouth {
+    position: absolute;
+    display: block;
+    text-align: center;
+  }
+  .curly-eye {
+    top: -0.08em;
+    width: 0.4em;
+    height: 0.6em;
+  }
+  .curly-eye-left {
+    left: 0.08em;
+  }
+  .curly-eye-right {
+    right: 0.08em;
+  }
+  .curly-eye-open,
+  .curly-eye-closed {
+    display: block;
+    width: 100%;
+    transform-origin: 50% 38%;
+  }
+  .curly-eye-closed {
+    position: absolute;
+    top: 0.2em;
+    left: 0;
+    opacity: 0;
+  }
+  .curly-mouth {
+    top: 0.43em;
+    left: 0.25em;
+    width: 0.5em;
+    transform-origin: 50% 25%;
+  }
+  .curly-face[data-expression='wink'] .curly-eye-open,
+  .curly-face[data-expression='wink'] .curly-eye-closed,
+  .curly-face[data-expression='wink'] .curly-mouth {
+    animation-duration: var(--face-gesture-duration);
+    animation-timing-function: var(--face-gesture-ease);
+    animation-iteration-count: 1;
+  }
+  .curly-face[data-expression='wink'] .curly-eye-open {
+    animation-name: curly-eye-open;
+  }
+  .curly-face[data-expression='wink'] .curly-eye-closed {
+    animation-name: curly-eye-closed;
+  }
+  .curly-face[data-expression='wink'] .curly-mouth {
+    animation-name: curly-mouth-wink;
+  }
+  @keyframes curly-eye-open {
+    0%,
+    8%,
+    72%,
+    100% {
+      opacity: 1;
+      transform: translateY(0) scaleY(1);
+    }
+    24%,
+    50% {
+      opacity: 0;
+      transform: translateY(0.07em) scaleY(0.45);
+    }
+  }
+  @keyframes curly-eye-closed {
+    0%,
+    8%,
+    72%,
+    100% {
+      opacity: 0;
+      transform: translateY(-0.02em) scale(0.9) rotate(-8deg);
+    }
+    24%,
+    50% {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(0deg);
+    }
+  }
+  @keyframes curly-mouth-wink {
+    0%,
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+    32%,
+    50% {
+      transform: translate(0.02em, -0.03em) rotate(-18deg);
+    }
+    75% {
+      transform: translate(0.005em, 0) rotate(2deg);
+    }
   }
   .wordmark-name {
     padding-bottom: 3px;
@@ -1190,11 +1288,10 @@
     }
     .wordmark {
       font-size: 29px;
-      gap: 7px;
+      gap: 6px;
     }
     .curly-face {
-      width: 35px;
-      height: 35px;
+      font-size: 30px;
     }
     .cowboy {
       font-size: 9px;

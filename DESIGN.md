@@ -155,7 +155,7 @@ components:
 
 Curly pairs expressive serif letters with precise, quiet controls. Warm paper and brown-black ink carry a restrained Western print influence. The material is a flat reading sheet defined by typography, tonal surfaces, and space.
 
-Punctuation is the signature: two Kyoto quotes form a face’s eyes, a rotated parenthesis forms its smile, and a tilde supplies its wink. The face accompanies the Curly name. Italic emphasis and inspectable marks carry that identity into real text. Generous spacing surrounds a denser working area.
+Punctuation is the signature: two Kyoto quotes form a face’s eyes, a breve forms its smile, and a small tilde supplies its wink. These are live font characters, arranged with CSS beside the Curly name. Italic emphasis and inspectable marks carry that identity into real text. Generous spacing surrounds a denser working area.
 
 **Key Characteristics:**
 
@@ -191,7 +191,7 @@ The requested pairing is implemented in the [local personal-font preview](apps/p
 - **Body:** the reading specimen uses the frontmatter `body` role. Its paragraphs have a one-em bottom margin; specimen headings use 1.35em, at weight 800 in Kyoto and 500 in the fallback.
 - **Interface body and labels:** regular sans-serif annotations; stronger labels use weights 500–600. Most controls sit at 11–13px.
 - **Source and code:** airy monospace line spacing separates literal text from the reading preview. Integration code uses 12px, becoming 11px on smaller layouts.
-- **Wordmark:** the punctuation face at 44px next to the Curly name at 35px, with a 10px gap and a minimum 44px link height. On mobile these become 35px, 29px, and 7px respectively. The name uses weight 800 in Kyoto and 650 in the fallback.
+- **Wordmark:** the punctuation face at 36px next to the Curly name at 35px, with a 6px gap and a minimum 44px link height. On mobile the face is 30px and the name is 29px; the gap stays 6px. The name uses weight 800 in Kyoto and 650 in the fallback.
 
 **The Fair Comparison Rule.** Original and With Curly share the same specimen typeface and container. Optional reading styles affect the same preview independently of punctuation conversion.
 
@@ -229,11 +229,11 @@ Sheets, code panels, and fields are square. Small corners soften controls: 1px f
 
 ### Punctuation face
 
-The [logo component](apps/playground/src/CurlyLogo.tsx) uses the [glyph outlines supplied by Caleb](apps/playground/src/curly-glyphs.ts). Equivalent cubic segments preserve the contours while enabling a real quote-to-tilde morph. The parenthesis rotates 90° into a smile, then shifts by up to 1.4/−1.5 viewBox units and tilts by −9° during the gesture.
+The [logo component](apps/playground/src/CurlyLogo.tsx) uses ordinary text spans: `‘` (U+2018) for the eyes, `˜` (U+02DC, small tilde) for the wink, and `˘` (U+02D8, breve) for the mouth. It inherits the serif family at weight 800. The face is 36px square on desktop and 30px on mobile, with a 6px gap before the name. Its proportions are defined in em units, so the characters scale together.
 
-One 960ms native SVG sequence runs after the logo first becomes visible, or on mouse hover / primary pointer press. Individual eye transitions take roughly 150–200ms, with a short closed-eye hold. The easing is `0.77 0 0.175 1`; the mouth settles within the same sequence. There is no animation library, per-frame JavaScript, or perpetual loop. Repeated triggers finish the active gesture. Offscreen and hidden-document states stop it. Reduced-motion preference skips the gesture and cancels one already playing. The face is decorative to assistive technology; the enclosing home link retains its accessible name and focus treatment.
+One 720ms CSS sequence runs after the logo first becomes visible, or on mouse hover / primary pointer press. The right quote squashes and crossfades into the small tilde, preserving the real font shapes. The mouth lifts by 0.03em, shifts by 0.02em, and rotates −18° toward the winking eye, then settles through a small 2° return. The easing is `cubic-bezier(0.77, 0, 0.175, 1)`. Only transform and opacity animate; there is no SVG, animation library, per-frame JavaScript, or perpetual loop. The animation-end event resets the expression, and repeated triggers let the current gesture finish. Offscreen and hidden-document states stop it. Reduced motion keeps the face still. The face is decorative to assistive technology; the enclosing home link retains its accessible name and focus treatment.
 
-A [static SVG mark](apps/playground/public/curly-mark.svg) and matching favicon share the same outlines. The favicon adapts its ink for a dark browser theme.
+A [static PNG mark](apps/playground/public/curly-mark.png) and two theme-specific PNG favicons are rendered directly from the same Kyoto text. Their source is PP Kyoto Extrabold supplied by Caleb; Pillow draws the characters without tracing or an intermediate SVG. The reproducible render script and font binary stay in the ignored `apps/playground/.local` directory. The interface itself renders live text, independent of these raster exports.
 
 ## Do's and Don'ts
 
