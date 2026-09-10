@@ -13,3 +13,4 @@ RELEASE.md
 .impeccable/
 scripts/cloudflare-inspect.mjs
 release/
+apps/playground/.local/

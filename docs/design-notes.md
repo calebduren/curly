@@ -16,7 +16,7 @@ The measurement sample demonstrates this distinction: `24" wide` can become `24â
 
 ## A restrained visual world
 
-Warm chalk, ink, and warm orange brown tie the product to Cowboy without turning a writing tool into a costume. Fraunces supplies the expressive voice; DM Sans carries the controls and explanations. Monospace is reserved for editable source, code, and measurements.
+Warm chalk, ink, and warm orange brown tie the product to Cowboy without turning a writing tool into a costume. The intended pairing uses PP Kyoto for its expressive serif voice and PP Neue Montreal for the controls and explanations. It is available in the local design preview; the public build uses Fraunces and DM Sans while the supplied personal-use licenses are clarified. [Typography notes](typography.md) record the distinction. Monospace is reserved for editable source, code, and measurements.
 
 The desktop layout behaves like a type specimen with an attached control rail. Mobile stacks the source and reading view. The reading preview expands to fit ordinary samples, while long input and code scroll inside their own boundaries.
 

@@ -1,0 +1,32 @@
+# Playground typography
+
+The local design preview pairs PP Kyoto Light (300) and Medium (500), with their real italics, with PP Neue Montreal Regular (400) and Semibold (600). DM Mono remains the source/code face. The supplied OTF files are used unchanged, with `font-display: swap` and no synthetic weights or italics.
+
+## Local preview
+
+Obtain the fonts directly from [Pangram Pangram](https://pangrampangram.com/), then put these files in `apps/playground/.local/fonts/`:
+
+- `PPKyoto-Light.otf`
+- `PPKyoto-LightItalic.otf`
+- `PPKyoto-Medium.otf`
+- `PPKyoto-MediumItalic.otf`
+- `PPNeueMontreal-Regular.otf`
+- `PPNeueMontreal-Semibold.otf`
+
+Create `apps/playground/.local/fonts.css` containing:
+
+```css
+@import '../src/personal-fonts.css';
+```
+
+Run `npm run dev`. The Vite configuration uses this optional stylesheet only in the development server. Without it, development uses Fraunces, DM Sans, and DM Mono from Fontsource. Production builds and `vite preview` always use those open fonts. No proprietary assets are needed to clone, build, or test the project.
+
+The `.local` directory is ignored by Git. Font files must not be added to this repository or to the MIT-licensed `cowboy-curly` package. The package’s reading CSS inherits the application’s own typefaces.
+
+## Publication status
+
+Checked September 10, 2026. Both supplied personal-use downloads include `EULA-PangramPangram-FreeForPersonalUse-MAY2021.pdf`. Its Free License clause excludes publicly available websites and applications, and its conditions prohibit public redistribution of font files.
+
+The foundry’s [current FAQ](https://pangrampangram.com/pages/faq) expressly permits personal web portfolios and personal projects. Its [current EULA](https://pangrampangram.com/pages/eula) separately describes paid Web and App licenses. These sources leave an unresolved conflict for a public interactive playground. The personal-use files are therefore enabled for local evaluation only; public embedding awaits clarification from the foundry or the appropriate license and font delivery. The FAQ alone is not recorded here as clearance for Curly’s public app.
+
+When public use is confirmed, prefer the foundry’s supplied WOFF2 files for the selected styles, update the build’s font entry, and verify the resulting downloads and fallback behavior. Keep the binaries separate from the open-source package and repository.

@@ -156,7 +156,9 @@ This document records the implemented values in the [stylesheet](apps/playground
 
 ## Typography
 
-Fraunces Variable supplies the identity, headings, italics, and reading specimen. DM Sans Variable supplies controls and explanations. DM Mono (400) supplies editable source and integration code; code ligatures are disabled. The font files are [bundled through Fontsource](apps/playground/src/main.tsx#L34).
+The public build uses Fraunces Variable for identity, headings, italics, and the reading specimen, with DM Sans Variable for controls and explanations. DM Mono (400) supplies editable source and integration code; code ligatures are disabled. These open fonts are [bundled through Fontsource](apps/playground/src/fonts.css#L1). The frontmatter records this public baseline.
+
+The requested pairing is implemented in the [local personal-font preview](apps/playground/src/personal-fonts.css#L1): PP Kyoto Light (300) for reading, display, and real italics; Kyoto Medium (500) for the existing wordmark, specimen headings, and emphasis; PP Neue Montreal Regular (400) and Semibold (600) for the interface. Sizes, line heights, and inspection geometry follow the same layout. The [typography setup and license notes](docs/typography.md) explain why the supplied personal-use files remain local pending public-use clarification.
 
 - **Display and headline:** balanced serif lines with tight tracking. Italic emphasis uses weight 400 and warm orange brown in the main promise.
 - **Body:** the reading specimen uses the frontmatter `body` role. Its paragraphs have a one-em bottom margin; specimen headings use weight 500 at 1.35em.

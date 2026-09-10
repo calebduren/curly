@@ -31,10 +31,7 @@ import {
   Download,
   X,
 } from 'lucide-react';
-import '@fontsource-variable/fraunces';
-import '@fontsource-variable/fraunces/wght-italic.css';
-import '@fontsource-variable/dm-sans';
-import '@fontsource/dm-mono/400.css';
+import '@curly/fonts.css';
 import 'cowboy-curly/prose.css';
 import './styles.css';
 import { samples } from './samples';
