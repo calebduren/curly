@@ -18,7 +18,7 @@ The measurement sample demonstrates this distinction: `24" wide` can become `24�
 
 Desaturated warm-gray paper and brown-black ink tie the product to Cowboy without turning a writing tool into a costume. The intended pairing uses PP Kyoto for its expressive serif voice and PP Neue Montreal for the controls and explanations. It is available in the local design preview; the public build uses Fraunces and DM Sans while the supplied personal-use licenses are clarified. [Typography notes](typography.md) record the distinction. Monospace is reserved for editable source, code, and measurements.
 
-The logo is a small typographic character made from the font itself: `‘` for eyes, `˜` for a wink, and `˘` for a smile. CSS transitions let the quote squish and crossfade into the small tilde while the breve lifts and tilts toward it. The close is quick and the return softer; repeated pointer interaction retargets the current pose. The compact face greets the visitor and responds to pointer interaction, with a still version for reduced-motion preferences.
+The header uses Caleb’s supplied looping SVG mark. The earlier logo remains a small footer character made from the font itself: `‘` for eyes, `˜` for a wink, and `˘` for a smile. CSS transitions let the quote squish and crossfade into the small tilde while the breve lifts and tilts toward it. The close is quick and the return softer; repeated pointer interaction retargets the current pose. The compact face greets the visitor and responds to pointer interaction, with a still version for reduced-motion preferences.
 
 The Serif / Sans serif control changes only the reading preview, including its headings, emphasis, and replay. It lets people judge the punctuation in either typographic voice while keeping Original / With Curly as a fair comparison in the same selected typeface.
 
@@ -26,7 +26,7 @@ The desktop playground pairs source and reading panes with attached switches and
 
 A dedicated “How it works” section makes installation a considered decision: it explains document boundaries, quote context, protected content, integration choices, streaming tradeoffs, measured bundle sizes, and known limits. The install command has its own labeled copy action. Field-note disclosures use short, reversible transitions for pointer interaction and respond immediately to the keyboard.
 
-The masthead keeps only the punctuation face. Attribution lives in the footer, above a faint ASCII desert with a brief passing tumbleweed. Both gestures respect reduced-motion preferences. The playground uses switches and text feedback instead of checkmark icons; its only copy action copies the visible reading preview.
+The masthead keeps only the new mark. Attribution and the punctuation face live in the footer, above a faint, full-width ASCII desert with a brief passing tumbleweed. Automatic dark mode carries the same desaturated warmth through native controls, reading surfaces, highlights, code, and browser chrome without a preference toggle. Both gestures respect reduced-motion preferences. The playground uses switches and text feedback instead of checkmark icons; its only copy action copies the visible reading preview.
 
 ## Streaming is a product decision
 

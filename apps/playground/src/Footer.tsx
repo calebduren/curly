@@ -12,9 +12,21 @@ const landscape = String.raw`
   ____| |_________________________________________| |_________| |____
 `;
 
+// Join three tiles into one panorama: enough to cover the footer’s 1408px maximum
+// at the fixed 13px monospace size, without stretching or resizing the characters.
+const rows = landscape.split('\n').slice(1, -1);
+const tileWidth = Math.max(...rows.map((row) => row.length));
+const panorama = rows
+  .map((row, index) => {
+    const ground = index === rows.length - 1;
+    const line = ground ? row.replace(/^ +/, (spaces) => '_'.repeat(spaces.length)) : row;
+    return line.padEnd(tileWidth, ground ? '_' : ' ').repeat(3);
+  })
+  .join('\n');
+
 export function Footer() {
   const footer = useRef<HTMLElement>(null);
-  const roll = useRef<HTMLPreElement>(null);
+  const roll = useRef<HTMLDivElement>(null);
   const breeze = useCallback(() => {
     if (document.hidden || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (roll.current) roll.current.dataset.rolling = 'true';
@@ -69,17 +81,20 @@ export function Footer() {
         </span>
       </div>
       <div className="footer-landscape" aria-hidden="true">
-        <pre>{landscape}</pre>
-        <pre
-          className="tumbleweed"
+        <pre className="landscape-panorama">{panorama}</pre>
+        <div
+          className="tumbleweed-track"
           ref={roll}
           data-rolling="false"
-          onAnimationEnd={() => {
-            if (roll.current) roll.current.dataset.rolling = 'false';
+          onAnimationEnd={(event) => {
+            if (event.target === event.currentTarget && roll.current)
+              roll.current.dataset.rolling = 'false';
           }}
-        >{String.raw` .\|/.
+        >
+          <pre className="tumbleweed">{String.raw` .\|/.
 --(*)--
  '/|\'`}</pre>
+        </div>
       </div>
     </footer>
   );

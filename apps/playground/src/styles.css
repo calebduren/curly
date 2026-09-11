@@ -45,6 +45,14 @@
     --accent: var(--ink);
     --accent-wash: #e1dcd3;
     --selection: #d4cfc5;
+    --source-ink: #57534d;
+    --scrollbar: #96918a;
+    --switch-off: #979289;
+    --control-active: var(--sheet);
+    --code-surface: #302d29;
+    --code-ink: #fdfcfb;
+    --code-muted: #c5c0b8;
+    color-scheme: light dark;
     --serif: 'Fraunces Variable', Georgia, serif;
     --sans: 'DM Sans Variable', sans-serif;
     --mono: 'DM Mono', monospace;
@@ -58,8 +66,27 @@
     line-height: 1.65;
     scroll-behavior: smooth;
     scroll-padding-top: 28px;
-    scrollbar-color: #96918a var(--paper);
+    scrollbar-color: var(--scrollbar) var(--paper);
     scrollbar-width: thin;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1e1d1b;
+      --sheet: #252320;
+      --ink: #e9e5df;
+      --muted: #b3aea6;
+      --rule: #45413b;
+      --soft: #302d29;
+      --accent-wash: #48433c;
+      --selection: #5b554c;
+      --source-ink: #c4beb5;
+      --scrollbar: #777168;
+      --switch-off: #827b71;
+      --control-active: #4d473f;
+      --code-surface: #171614;
+      --code-ink: #e9e5df;
+      --code-muted: #b3aea6;
+    }
   }
   ::selection {
     background: var(--selection);
@@ -269,6 +296,19 @@
 }
 
 @layer components {
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 44px;
+    min-height: 48px;
+  }
+  .brand-mark svg {
+    display: block;
+    width: 40px;
+    height: 46px;
+  }
   .wordmark {
     display: inline-flex;
     align-items: center;
@@ -438,7 +478,7 @@
     white-space: nowrap;
   }
   .segmented button[aria-pressed='true'] {
-    background: var(--sheet);
+    background: var(--control-active);
     color: var(--ink);
     box-shadow: 0 1px 3px #302d2910;
   }
@@ -458,7 +498,7 @@
     width: 30px;
     height: 18px;
     border-radius: 12px;
-    background: #a5a098;
+    background: var(--switch-off);
     transition: background-color 160ms ease;
   }
   .toggle-thumb {
@@ -510,7 +550,7 @@
     outline-offset: -4px;
     background: none;
     padding: 18px 26px 24px;
-    color: #57534d;
+    color: var(--source-ink);
     font: 400 13px/1.85 var(--mono);
     tab-size: 2;
     scrollbar-width: thin;
@@ -1009,8 +1049,8 @@
     margin-top: 22px;
   }
   .code-panel {
-    background: var(--ink);
-    color: var(--sheet);
+    background: var(--code-surface);
+    color: var(--code-ink);
     margin-top: 32px;
     min-width: 0;
   }
@@ -1034,7 +1074,7 @@
     line-height: 1.8;
     overflow: auto;
     tab-size: 2;
-    color: var(--sheet);
+    color: var(--code-ink);
   }
   .code-panel code {
     color: inherit;
@@ -1042,10 +1082,10 @@
   .code-panel > p {
     padding: 0 24px 22px;
     font-size: 13px;
-    color: #c5c0b8;
+    color: var(--code-muted);
   }
   .code-panel :focus-visible {
-    outline-color: var(--sheet);
+    outline-color: var(--code-ink);
   }
   .notes-list {
     margin-top: 28px;
@@ -1131,18 +1171,30 @@
     font: 13px/1.25 var(--mono);
     margin: 0;
   }
-  .footer-landscape .tumbleweed {
+  .tumbleweed-track {
+    position: absolute;
+    left: 0;
     bottom: 20px;
-    left: calc(50% - 80px);
+    width: 100%;
+    height: 49px;
     opacity: 0;
+    transform: translateX(-60px);
   }
-  .tumbleweed[data-rolling='true'] {
-    animation: tumble 3800ms linear;
+  .footer-landscape .tumbleweed {
+    left: 0;
+    bottom: 0;
+    transform: none;
   }
-  @keyframes tumble {
+  .tumbleweed-track[data-rolling='true'] {
+    animation: tumble-travel 4800ms linear;
+  }
+  .tumbleweed-track[data-rolling='true'] .tumbleweed {
+    animation: tumble-roll 4800ms linear;
+  }
+  @keyframes tumble-travel {
     0% {
       opacity: 0;
-      transform: translateX(-120px) rotate(-180deg);
+      transform: translateX(-60px);
     }
     12%,
     85% {
@@ -1150,7 +1202,15 @@
     }
     100% {
       opacity: 0;
-      transform: translateX(200px) rotate(180deg);
+      transform: translateX(calc(100% + 60px));
+    }
+  }
+  @keyframes tumble-roll {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(720deg);
     }
   }
   .toast {

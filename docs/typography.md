@@ -8,7 +8,7 @@ The reading preview defaults to Serif and can switch to Sans serif. This applies
 
 The page uses 13, 15, and 17px for body and interface roles, with 13px as the minimum at every breakpoint. Display headings have a separate, smaller scale than the original design. Letter spacing is zero throughout; headings use upright type. Introductory promise and supporting copy share a size and weight, with color providing hierarchy. Editorial sections form centered reading columns capped at 65ch.
 
-The masthead and footer logo is the punctuation face alone: no visible wordmark text. The face remains live Kyoto characters, with the small tilde `˜` and breve `˘`.
+The masthead uses Caleb’s supplied SVG mark, independent of the fonts. The footer retains the punctuation face as a character: live Kyoto glyphs, with the small tilde `˜` and breve `˘`. Neither includes visible wordmark text. Both inherit the page’s automatic light or dark theme.
 
 ## Local preview
 

@@ -32,7 +32,7 @@ import { samples } from './samples';
 import { inspectMarkdown, integrationSnippet } from './model';
 import { ReplayBoundary } from './ReplayBoundary';
 import { installCommand, distributionLabel } from './distribution';
-import { CurlyLogo } from './CurlyLogo';
+import { BrandMark } from './BrandMark';
 import { Disclosure, TaskStatus, Toggle } from './Controls';
 import { HowItWorks } from './HowItWorks';
 import { Footer } from './Footer';
@@ -201,7 +201,7 @@ function App() {
         Skip to playground
       </a>
       <header className="masthead" id="top">
-        <CurlyLogo />
+        <BrandMark />
         <nav aria-label="Main navigation">
           <a href="#playground">Playground</a>
           <a href="#how-it-works">How it works</a>

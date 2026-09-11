@@ -103,11 +103,11 @@ components:
 
 # Design System: Curly
 
-Curly pairs expressive serif letters with quiet controls. The signature is a face made from punctuation; a restrained ASCII desert in the footer connects the product to Cowboy. Flat tonal surfaces, space, and typography define the page. No uppercase styling, added letter spacing, checkmark icons, or italic display headings.
+Curly pairs expressive serif letters with quiet controls. The header uses Caleb’s supplied looping SVG mark. The punctuation face remains a playful footer character, above a restrained ASCII desert that spans the footer. Flat tonal surfaces, space, and typography define the page. No uppercase styling, added letter spacing, checkmark icons, or italic display headings.
 
 ## Color and type
 
-The palette is desaturated warm gray with brown-black ink. The output sheet is lighter than the page; the source pane, options, and install command use soft gray. Borders remain only where they help read formatted tables or blockquotes. Focus uses a two-pixel ink outline.
+The palette is desaturated warm gray with brown-black ink in light mode and warm charcoal with pale ink in dark mode. The page follows `prefers-color-scheme` directly, including live device preference changes; there is no toggle or saved override. CSS `color-scheme` and matching theme-color metadata cover native controls and browser chrome. In light mode, the output sheet is lighter than the page; the source pane, options, and install command use soft gray. Borders remain only where they help read formatted tables or blockquotes. Focus uses a two-pixel ink outline. Dark surfaces are `#1e1d1b` (page), `#252320` (sheet), and `#302d29` (soft); text is `#e9e5df` with `#b3aea6` annotations. Source, switches, highlights, selected segments, scrollbars, and code have explicit theme tokens. The code panel stays dark in both themes instead of becoming a bright reversed block.
 
 Body and interface sizes are 13, 15, and 17px. No readable interface text drops below 13px, including source, code, annotations, footer, and responsive controls. Headings use their separate display scale. Introductory promise and supporting text share 17px and weight 400; color supplies hierarchy. Letter spacing is zero throughout.
 
@@ -115,7 +115,7 @@ The public build uses Fraunces Variable, DM Sans Variable, and DM Mono. The loca
 
 ## Page structure
 
-The page container is capped at 1408px with 64px gutters, becoming 36px at 1250px and 20px at 620px. The masthead contains the face and three links: Playground, How it works, and Install. Attribution appears in the footer.
+The page container is capped at 1408px with 64px gutters, becoming 36px at 1250px and 20px at 620px. The masthead contains the new SVG mark and three links: Playground, How it works, and Install. Attribution appears in the footer.
 
 Introductory and supporting sections form centered single columns capped at 65ch. The introduction is centered; explanatory prose aligns left. The editorial point of view has no decorative apostrophe. Installation and field notes follow the same reading column instead of repeating the playground’s split layout.
 
@@ -147,10 +147,12 @@ Internal links use down arrows where an icon is useful. External footer links to
 
 ## Motion and identity
 
-The face is live font text: `‘` (U+2018) for eyes, `˜` (U+02DC) for the wink, and `˘` (U+02D8) for the smile. No SVG is used. It is 36px on desktop and 30px on mobile, inside a 44px home link. The visible Curly name is omitted.
+The primary logo is Caleb Durenberger’s supplied 40 × 46 SVG, preserved at its original proportions with a five-unit rounded stroke. It inherits the current ink color. The header path and theme-aware SVG favicon match exactly. `BrandMark.tsx` and `public/curly-mark.svg` record that source.
+
+The footer face is live font text: `‘` (U+2018) for eyes, `˜` (U+02DC) for the wink, and `˘` (U+02D8) for the smile. This footer character uses no SVG. It is 36px on desktop and 30px on mobile, inside a 44px home link. The visible Curly name is omitted.
 
 A brief greeting runs on first visibility or pointer interaction. The right quote squashes and crossfades into the small tilde while the mouth lifts and rotates −18°. Retargetable CSS transitions close the eye over 180ms and tilt the mouth over 280ms. After 320ms, the face returns to rest, with a 240ms eye release and a 440ms mouth settle. Offscreen, hidden-document, and reduced-motion states stop the gesture. Keyboard activation doesn’t trigger it.
 
-The footer’s decorative ASCII cactus landscape sits behind the attribution with no pointer or accessibility target. A punctuation tumbleweed passes through once when the footer comes into view and can repeat on fine-pointer entry. Its 3.8-second animation uses only transform and opacity; it is not an endless loop. It adds no per-frame React work or animation dependency.
+The footer’s decorative ASCII cactus landscape sits behind the attribution with no pointer or accessibility target. Three joined tiles span its full width, clipped to the footer edges, with a continuous ground line. Characters remain at a crisp 13px instead of being stretched. A punctuation tumbleweed passes through once when the footer comes into view and can repeat on fine-pointer entry. It travels across the full footer in 4.8 seconds, using separate translation and rotation wrappers. The animation uses only transform and opacity; it is not an endless loop. It adds no per-frame React work or animation dependency.
 
-Switch thumbs use a 220ms ease-out transition for pointer interaction and switch immediately from the keyboard. Highlights fade over 180ms. General color changes use 150ms. Reduced-motion preferences disable transitions, animations, and smooth scrolling. Existing static PNG marks and favicon assets retain their recorded provenance; this revision adds no raster assets.
+Switch thumbs use a 220ms ease-out transition for pointer interaction and switch immediately from the keyboard. Highlights fade over 180ms. General color changes use 150ms. Reduced-motion preferences disable transitions, animations, and smooth scrolling. The favicon now uses the supplied SVG and adapts its stroke to the device theme. This revision adds no raster assets; the previous PNG face files are retained as legacy assets and are no longer referenced as favicons.
