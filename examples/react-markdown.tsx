@@ -1,6 +1,6 @@
 import Markdown from 'react-markdown';
-import remarkCurly from 'cowboy-curly/remark';
+import remarkTypograph from '@calebduren/typograph/remark';
 
 export function Message({ text }: { text: string }) {
-  return <Markdown remarkPlugins={[remarkCurly]}>{text}</Markdown>;
+  return <Markdown remarkPlugins={[remarkTypograph]}>{text}</Markdown>;
 }

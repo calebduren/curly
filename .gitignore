@@ -9,8 +9,10 @@ coverage/
 test-results/
 playwright-report/
 PRODUCT.md
-RELEASE.md
 .impeccable/
-scripts/cloudflare-inspect.mjs
 release/
 apps/playground/.local/
+
+# Built distributable resources
+apps/playground/public/downloads/
+apps/playground/public/skill/

@@ -1,11 +1,11 @@
 import { Streamdown, defaultRemarkPlugins } from 'streamdown';
-import remarkCurly from 'cowboy-curly/remark';
+import remarkTypograph from '@calebduren/typograph/remark';
 
 export function StreamingMessage({ text, isStreaming }: { text: string; isStreaming: boolean }) {
   return (
     <Streamdown
       isAnimating={isStreaming}
-      remarkPlugins={[...Object.values(defaultRemarkPlugins), [remarkCurly, { primes: true }]]}
+      remarkPlugins={[...Object.values(defaultRemarkPlugins), [remarkTypograph, { primes: true }]]}
     >
       {text}
     </Streamdown>

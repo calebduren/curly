@@ -4,8 +4,8 @@ import remarkParse from 'remark-parse';
 import remarkMath from 'remark-math';
 import rehypeParse from 'rehype-parse';
 import rehypeStringify from 'rehype-stringify';
-import remarkCurly, { transformTree, type TextTree } from '../packages/curly/src/remark';
-import rehypeCurly from '../packages/curly/src/rehype';
+import remarkTypograph, { transformTree, type TextTree } from '../packages/typograph/src/remark';
+import rehypeTypograph from '../packages/typograph/src/rehype';
 
 function parse(source: string) {
   return unified().use(remarkParse).use(remarkMath).parse(source) as TextTree;
@@ -52,19 +52,28 @@ it('collapses ellipsis across text nodes without losing formatting', () => {
   expect(textOf(tree)).toBe('Wait… now.');
 });
 it('works as a standard remark plugin', async () => {
-  const processor = unified().use(remarkParse).use(remarkCurly);
+  const processor = unified().use(remarkParse).use(remarkTypograph);
   const tree = await processor.run(processor.parse('"Hello."'));
   expect(textOf(tree as TextTree)).toBe('“Hello.”');
 });
 it('protects HTML attributes and exact-code elements', async () => {
   const result = await unified()
     .use(rehypeParse, { fragment: true })
-    .use(rehypeCurly)
+    .use(rehypeTypograph)
     .use(rehypeStringify)
     .process(
-      '<p title="a &quot;quote&quot;">"One <em>good</em> day." <code>"literal"</code></p><p data-curly="off">"Original"</p>',
+      '<p title="a &quot;quote&quot;">"One <em>good</em> day." <code>"literal"</code></p><p data-typograph="off">"Original"</p>',
     );
   expect(String(result)).toContain('“One <em>good</em> day.”');
   expect(String(result)).toContain('<code>"literal"</code>');
-  expect(String(result)).toContain('<p data-curly="off">"Original"</p>');
+  expect(String(result)).toContain('<p data-typograph="off">"Original"</p>');
+});
+
+it('supports the Typograph opt-out and exposes its report', async () => {
+  const tree = unified()
+    .use(rehypeParse, { fragment: true })
+    .parse('<p data-typograph="off">"Keep."</p><p>"Change."</p>') as TextTree;
+  const report = transformTree(tree, 'html');
+  expect(textOf(tree)).toBe('"Keep."“Change.”');
+  expect(tree.data?.typograph).toBe(report);
 });

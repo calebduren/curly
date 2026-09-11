@@ -1,6 +1,6 @@
 import { Streamdown, defaultRemarkPlugins } from 'streamdown';
-import remarkCurly from 'cowboy-curly/remark';
-import type { CurlyOptions } from 'cowboy-curly';
+import remarkTypograph from '@calebduren/typograph/remark';
+import type { TypographOptions } from '@calebduren/typograph';
 import { TaskStatus } from './Controls';
 export default function StreamingSpecimen({
   source,
@@ -9,7 +9,7 @@ export default function StreamingSpecimen({
   playing,
 }: {
   source: string;
-  options: CurlyOptions;
+  options: TypographOptions;
   formatted: boolean;
   playing: boolean;
 }) {
@@ -21,7 +21,9 @@ export default function StreamingSpecimen({
       codeBlockMaxHeight={0}
       remarkPlugins={[
         ...Object.values(defaultRemarkPlugins),
-        ...(formatted ? [[remarkCurly, options] as [typeof remarkCurly, CurlyOptions]] : []),
+        ...(formatted
+          ? [[remarkTypograph, options] as [typeof remarkTypograph, TypographOptions]]
+          : []),
       ]}
       components={{
         input: ({ checked }) => <TaskStatus checked={checked === true} />,

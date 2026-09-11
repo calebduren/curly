@@ -4,8 +4,8 @@ import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 import { createRequire } from 'node:module';
 import { build } from 'esbuild';
-import { smarten } from '../packages/curly/src/index';
-import { createQuoteStream } from '../packages/curly/src/stream';
+import { smarten } from '../packages/typograph/src/index';
+import { createQuoteStream } from '../packages/typograph/src/stream';
 import { transform as punctilio } from 'punctilio';
 import { retext } from 'retext';
 import retextSmartypants from 'retext-smartypants';
@@ -17,7 +17,7 @@ const prose =
   '"Good words deserve good type," she said. It\'s a small detail, and we don\'t overlook the little things.\n\n';
 const configs = [
   {
-    name: 'cowboy-curly',
+    name: '@calebduren/typograph',
     run: (s: string) => smarten(s),
     options: 'defaults: quotes and apostrophes',
   },
@@ -52,9 +52,9 @@ function measure(fn: () => unknown) {
 const versions: Record<string, string> = {};
 for (const c of configs)
   versions[c.name] =
-    c.name === 'cowboy-curly'
+    c.name === '@calebduren/typograph'
       ? JSON.parse(
-          await readFile(new URL('../packages/curly/package.json', import.meta.url), 'utf8'),
+          await readFile(new URL('../packages/typograph/package.json', import.meta.url), 'utf8'),
         ).version
       : JSON.parse(
           await readFile(
@@ -75,7 +75,7 @@ for (const length of [1024, 10240, 102400]) {
 const bundle = [];
 for (const entry of ['index', 'remark', 'rehype', 'stream']) {
   const result = await build({
-    entryPoints: ['packages/curly/dist/' + entry + '.js'],
+    entryPoints: ['packages/typograph/dist/' + entry + '.js'],
     bundle: true,
     minify: true,
     format: 'esm',
@@ -111,15 +111,17 @@ const facts = {
 await mkdir('benchmarks', { recursive: true });
 await writeFile('benchmarks/results.json', JSON.stringify(facts, null, 2) + '\n');
 const lines = [
-  '# Curly performance report',
+  '# Typograph performance report',
   '',
-  `Measured ${facts.date} on ${facts.cpu}, Node ${facts.runtime}. Run \`npm run build -w cowboy-curly && npm run bench\` to reproduce.`,
+  `Measured ${facts.date} on ${facts.cpu}, Node ${facts.runtime}. Run \`npm run build -w @calebduren/typograph && npm run bench\` to reproduce.`,
   '',
   'These are local measurements, not guarantees for every browser or device. Nine warmed rounds; each table reports the median per call. Workloads are synthetic English prose. Allocation, parsing, and diagnostics are included in the API being timed. Different libraries have different semantics; this is not a correctness ranking.',
   '',
   '## Browser bundle size',
   '',
-  'esbuild bundles each public ESM entry independently, minified with gzip. Sizes include Curly’s shared code, exclude your existing renderer, and are not additive when bundled together. No runtime dependencies.',
+  'Punctuation entrypoints only. Reading CSS and the typography/principles entrypoints are outside this benchmark.',
+  '',
+  'esbuild bundles each public ESM entry independently, minified with gzip. Sizes include Typograph’s shared code, exclude your existing renderer, and are not additive when bundled together. No runtime dependencies.',
   '',
   '| Entry | Minified bytes | Gzip bytes |',
   '| --- | ---: | ---: |',
@@ -139,11 +141,11 @@ const lines = [
   '',
   ...configs.map((c) => `- **${c.name}:** ${c.options}.`),
   '',
-  'Curly includes its inspectable decision records. retext includes its parser/stringifier pipeline. Punctilio can do substantially more typography work than Curly; unrelated transforms are disabled here. All input is ASCII, so code-unit counts equal bytes. Dependency versions are pinned in the lockfile.',
+  'Typograph includes its inspectable decision records. retext includes its parser/stringifier pipeline. Punctilio can do substantially more typography work than Typograph; unrelated transforms are disabled here. All input is ASCII, so code-unit counts equal bytes. Dependency versions are pinned in the lockfile.',
   '',
   '## Stress cases',
   '',
-  '| Input | Curly median |',
+  '| Input | Typograph median |',
   '| --- | ---: |',
   ...adversarial.map((r) => `| ${r.case} | ${r.medianMs} ms |`),
   `| 100k paragraph, one-character chunks, one final flush | ${streaming.medianMs} ms |`,
@@ -152,9 +154,9 @@ const lines = [
   '',
   '## Scope and comparison',
   '',
-  'Curly intentionally concentrates on English quotes/apostrophes, optional primes/ellipses, exact spans, AST integrations, and explainable decisions. Smartquotes is a compact quote converter. retext-smartypants fits natural-language processing pipelines. Punctilio offers a much broader typography system and localization. Use the library whose behavior fits your project.',
+  'Typograph intentionally concentrates on English quotes/apostrophes, optional primes/ellipses, exact spans, AST integrations, and explainable decisions. Smartquotes is a compact quote converter. retext-smartypants fits natural-language processing pipelines. Punctilio offers a much broader typography system and localization. Use the library whose behavior fits your project.',
   '',
-  'The correctness corpus is authored for Curly’s documented rules and should not be presented as an independent competition. Contributions with failing examples are welcome.',
+  'The correctness corpus is authored for Typograph’s documented rules and should not be presented as an independent competition. Contributions with failing examples are welcome.',
 ];
 await writeFile('benchmarks/README.md', lines.join('\n') + '\n');
 console.log(JSON.stringify({ bundle, timings, adversarial, streaming }, null, 2));

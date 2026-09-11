@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import fc from 'fast-check';
-import { analyze, smarten } from '../packages/curly/src/index';
+import { analyze, smarten } from '../packages/typograph/src/index';
 import { corpus } from './corpus';
 
 describe('English typography corpus', () => {

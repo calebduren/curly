@@ -1,23 +1,22 @@
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-const publicFonts = fileURLToPath(new URL('./src/fonts.css', import.meta.url));
-const localFonts = fileURLToPath(new URL('./.local/fonts.css', import.meta.url));
+const brandFontFiles = ['SaansCollectionVF-TRIAL.woff2', 'SerrifCollectionVF-TRIAL.woff2'];
+const hasBrandFonts = brandFontFiles.every((filename) =>
+  existsSync(new URL(`./.local/fonts/${filename}`, import.meta.url)),
+);
+const fontEntry = fileURLToPath(
+  new URL(hasBrandFonts ? './src/personal-fonts.css' : './src/font-fallback.css', import.meta.url),
+);
 
-export default defineConfig(({ command, isPreview }) => ({
+export default defineConfig({
   plugins: [react()],
-  base: '/curly/',
-  resolve: {
-    dedupe: ['react', 'react-dom'],
-    alias: {
-      // Personal font trials stay in local development; public builds use open fonts.
-      '@curly/fonts.css':
-        command === 'serve' && !isPreview && existsSync(localFonts) ? localFonts : publicFonts,
-    },
-  },
+  base: '/',
+  resolve: { dedupe: ['react', 'react-dom'], alias: { '@typograph/brand-fonts': fontEntry } },
+  define: { 'import.meta.env.VITE_TYPOGRAPH_BRAND_FONTS': JSON.stringify(String(hasBrandFonts)) },
   optimizeDeps: { include: ['streamdown', 'react-markdown'] },
   build: { sourcemap: true },
   server: { port: 4173 },
-}));
+});

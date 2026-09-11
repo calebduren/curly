@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { corpus } from './corpus';
-import { smarten } from '../packages/curly/src/index';
-import { createQuoteStream, curlyTransformStream } from '../packages/curly/src/stream';
+import { smarten } from '../packages/typograph/src/index';
+import { createQuoteStream, typographTransformStream } from '../packages/typograph/src/stream';
 
 for (const fixture of corpus)
   it('stream splits: ' + fixture.name, () => {
@@ -32,7 +32,7 @@ it('provides a real Web TransformStream', async () => {
       c.close();
     },
   });
-  const reader = readable.pipeThrough(curlyTransformStream()).getReader();
+  const reader = readable.pipeThrough(typographTransformStream()).getReader();
   let output = '';
   while (true) {
     const next = await reader.read();

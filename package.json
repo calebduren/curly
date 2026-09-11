@@ -1,5 +1,5 @@
 {
-  "name": "curly-workspace",
+  "name": "typograph-workspace",
   "private": true,
   "type": "module",
   "workspaces": [
@@ -8,13 +8,14 @@
     "examples/*"
   ],
   "scripts": {
-    "build": "npm run build -w cowboy-curly && npm run build -w @curly/playground",
+    "build": "npm run build -w @calebduren/typograph && npm run build:resources && npm run build -w @typograph/playground",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "dev": "npm run dev -w @curly/playground",
+    "dev": "npm run build -w @calebduren/typograph && npm run build:resources && npm run dev -w @typograph/playground",
     "bench": "node --import tsx scripts/benchmark.ts",
     "check:package": "node scripts/check-package.mjs",
-    "check": "npm run build && npm run typecheck && npm test && npm run check:package"
+    "check": "npm run build && npm run typecheck && npm test && npm run check:package",
+    "build:resources": "node --import tsx scripts/build-resources.ts"
   },
   "devDependencies": {
     "@types/hast": "^3.0.0",

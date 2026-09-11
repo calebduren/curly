@@ -1,9 +1,9 @@
-import type { CurlyOptions } from '../packages/curly/src/index';
+import type { TypographOptions } from '../packages/typograph/src/index';
 export interface Fixture {
   name: string;
   input: string;
   expected: string;
-  options?: CurlyOptions;
+  options?: TypographOptions;
 }
 export const corpus: Fixture[] = [
   { name: 'dialogue', input: '"Hello," she said.', expected: '“Hello,” she said.' },
@@ -30,8 +30,8 @@ export const corpus: Fixture[] = [
   { name: 'unicode contraction', input: "Élodie's café.", expected: 'Élodie’s café.' },
   { name: 'combining accent', input: "Café's menu.", expected: 'Café’s menu.' },
   { name: 'unicode letter', input: "𐐀's letter", expected: '𐐀’s letter' },
-  { name: 'mixed curly opening', input: '“Hello"', expected: '“Hello”' },
-  { name: 'already curly', input: '“That’s ‘lovely’.”', expected: '“That’s ‘lovely’.”' },
+  { name: 'mixed Unicode opening', input: '“Hello"', expected: '“Hello”' },
+  { name: 'already typographic', input: '“That’s ‘lovely’.”', expected: '“That’s ‘lovely’.”' },
   { name: 'empty double quote', input: '""', expected: '“”' },
   { name: 'empty single quote', input: "''", expected: '‘’' },
   { name: 'unclosed quote', input: '"Hello', expected: '“Hello' },

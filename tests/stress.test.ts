@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import fc from 'fast-check';
-import { smarten } from '../packages/curly/src/index';
-import { createQuoteStream } from '../packages/curly/src/stream';
+import { smarten } from '../packages/typograph/src/index';
+import { createQuoteStream } from '../packages/typograph/src/stream';
 
 it('is invariant across random multi-chunk streams and newline boundaries', () => {
   fc.assert(

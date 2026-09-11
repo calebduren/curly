@@ -1,109 +1,17 @@
-@import '@fontsource/dm-mono/400.css';
-
-/* Personal-use local preview. See docs/typography.md before public embedding. */
-
+/* Locally supplied variable fonts. Binaries stay outside the repository and package. */
 @font-face {
-  font-family: 'PP Kyoto';
-  src: url('../.local/fonts/PPKyoto-Extrabold.otf') format('opentype');
-  font-weight: 800;
-  font-style: normal;
+  font-family: 'Saans';
+  src: url('../.local/fonts/SaansCollectionVF-TRIAL.woff2') format('woff2');
+  font-weight: 300 900;
+  font-style: oblique 0deg 10deg;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'PP Kyoto';
-  src: url('../.local/fonts/PPKyoto-ExtraboldItalic.otf') format('opentype');
-  font-weight: 800;
-  font-style: italic;
+  font-family: 'Serrif';
+  src: url('../.local/fonts/SerrifCollectionVF-TRIAL.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 50% 100%;
+  font-style: oblique 0deg 10deg;
   font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Kyoto';
-  src: url('../.local/fonts/PPKyoto-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Kyoto';
-  src: url('../.local/fonts/PPKyoto-MediumItalic.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('../.local/fonts/PPNeueMontreal-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('../.local/fonts/PPNeueMontreal-Semibold.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('../.local/fonts/PPNeueMontreal-Italic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'PP Neue Montreal';
-  src: url('../.local/fonts/PPNeueMontreal-SemiboldItalic.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-
-:root {
-  --serif: 'PP Kyoto', Georgia, serif;
-  --sans: 'PP Neue Montreal', Arial, sans-serif;
-}
-
-h1,
-h2,
-em,
-.specimen,
-.decision-glyph {
-  font-weight: 500;
-}
-
-.wordmark,
-.specimen h1,
-.specimen h2,
-.specimen h3,
-.specimen strong,
-.specimen b,
-.specimen :is(strong, b) em {
-  font-weight: 800;
-}
-
-.select-wrap select,
-.pane-toolbar > label,
-.replay-button,
-.decision-detail strong {
-  font-weight: 600;
-}
-
-.specimen[data-typeface='sans'] {
-  font-weight: 400;
-}
-
-.specimen[data-typeface='sans'] :is(h1, h2, h3, strong, b) {
-  font-weight: 600;
-}
-
-.specimen[data-typeface='sans'] em {
-  font-weight: inherit;
 }

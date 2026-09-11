@@ -1,4 +1,4 @@
-import { analyze, type CurlyOptions, type Decision } from './index';
+import { analyze, type TypographOptions, type Decision } from './index';
 
 export interface TextTree {
   type: string;
@@ -7,14 +7,14 @@ export interface TextTree {
   children?: TextTree[];
   properties?: Record<string, unknown>;
   data?: {
-    curly?: TreeDecision[];
+    typograph?: TreeDecision[];
     hName?: string;
     hProperties?: Record<string, unknown>;
     hChildren?: TextTree[];
   };
   position?: { start: { offset?: number }; end: { offset?: number } };
 }
-export interface TreeOptions extends Omit<CurlyOptions, 'protectedRanges'> {
+export interface TreeOptions extends Omit<TypographOptions, 'protectedRanges'> {
   /** Protect a node and all descendants. */
   skip?: (node: TextTree) => boolean;
   /** Opt-in semantic marks for inspectors. Off by default; introduces no CSS. */
@@ -95,8 +95,8 @@ export function transformTree(
     markdownProtected.has(node.type) ||
     (mode === 'html' &&
       (htmlProtected.has(node.tagName ?? '') ||
-        node.properties?.['data-curly'] === 'off' ||
-        node.properties?.dataCurly === 'off' ||
+        node.properties?.['data-typograph'] === 'off' ||
+        node.properties?.dataTypograph === 'off' ||
         node.properties?.contentEditable === true ||
         node.properties?.contentEditable === 'true' ||
         node.properties?.contentEditable === 'plaintext-only'));
@@ -159,9 +159,9 @@ export function transformTree(
             type: 'element',
             tagName: 'mark',
             properties: {
-              dataCurlyId: blockId + ':' + edit.start,
-              dataCurlyReason: edit.reason,
-              dataCurlyKind: edit.kind,
+              dataTypographId: blockId + ':' + edit.start,
+              dataTypographReason: edit.reason,
+              dataTypographKind: edit.kind,
             },
             children: [{ type: 'text', value: edit.replacement }],
           });
@@ -221,6 +221,6 @@ export function transformTree(
     flush();
   }
   walk(tree);
-  tree.data = { ...tree.data, curly: report };
+  tree.data = { ...tree.data, typograph: report };
   return report;
 }

@@ -1,10 +1,10 @@
-/** Curly’s deterministic English punctuation engine. Offsets are UTF-16. */
+/** Typograph’s deterministic English punctuation engine. Offsets are UTF-16. */
 export interface ProtectedRange {
   start: number;
   end: number;
   reason?: string;
 }
-export interface CurlyOptions {
+export interface TypographOptions {
   quotes?: boolean;
   apostrophes?: boolean;
   primes?: boolean;
@@ -27,7 +27,7 @@ export interface Decision {
   kind: DecisionKind;
   reason: string;
 }
-export interface CurlyResult {
+export interface TypographResult {
   text: string;
   decisions: Decision[];
   changes: Decision[];
@@ -68,7 +68,7 @@ function rangesFor(text: string, given: readonly ProtectedRange[]): ProtectedRan
         range.end < range.start
       ) {
         throw new RangeError(
-          'Curly protected ranges must use valid UTF-16 offsets within the input.',
+          'Typograph protected ranges must use valid UTF-16 offsets within the input.',
         );
       }
       return { ...range };
@@ -111,8 +111,8 @@ function rangesFor(text: string, given: readonly ProtectedRange[]): ProtectedRan
 }
 
 /** Format declared prose. Use the AST integrations for Markdown or HTML. */
-export function analyze(text: string, options: CurlyOptions = {}): CurlyResult {
-  if (typeof text !== 'string') throw new TypeError('Curly expects a string.');
+export function analyze(text: string, options: TypographOptions = {}): TypographResult {
+  if (typeof text !== 'string') throw new TypeError('Typograph expects a string.');
   const { quotes = true, apostrophes = true, primes = false, ellipses = false } = options;
   const ranges = rangesFor(text, options.protectedRanges ?? []);
   const decisions: Decision[] = [];
@@ -289,7 +289,7 @@ export function analyze(text: string, options: CurlyOptions = {}): CurlyResult {
         i + 1,
         c,
         'ambiguous',
-        'The context does not settle this mark; Curly leaves it alone.',
+        'The context does not settle this mark; Typograph leaves it alone.',
       );
     }
   }
@@ -304,7 +304,7 @@ export function analyze(text: string, options: CurlyOptions = {}): CurlyResult {
   return { text: changes.length ? output.join('') : text, decisions, changes };
 }
 
-export function smarten(text: string, options: CurlyOptions = {}): string {
+export function smarten(text: string, options: TypographOptions = {}): string {
   return analyze(text, options).text;
 }
 

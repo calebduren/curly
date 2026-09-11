@@ -1,16 +1,16 @@
 {
-  "date": "2026-09-10",
-  "runtime": "v26.7.0",
+  "date": "2026-09-11",
+  "runtime": "v22.19.0",
   "cpu": "Apple M3 Max",
   "versions": {
-    "cowboy-curly": "1.0.0",
+    "@calebduren/typograph": "2.0.0-next.1",
     "smartquotes": "2.3.2",
     "punctilio": "5.4.4",
     "retext-smartypants": "6.2.0"
   },
   "configurations": [
     {
-      "name": "cowboy-curly",
+      "name": "@calebduren/typograph",
       "options": "defaults: quotes and apostrophes"
     },
     {
@@ -30,134 +30,134 @@
   "bundle": [
     {
       "entry": "index",
-      "bytes": 4758,
-      "gzipBytes": 2334
+      "bytes": 4770,
+      "gzipBytes": 2339
     },
     {
       "entry": "remark",
-      "bytes": 7544,
-      "gzipBytes": 3477
+      "bytes": 7580,
+      "gzipBytes": 3480
     },
     {
       "entry": "rehype",
-      "bytes": 7521,
-      "gzipBytes": 3464
+      "bytes": 7557,
+      "gzipBytes": 3467
     },
     {
       "entry": "stream",
-      "bytes": 5530,
-      "gzipBytes": 2671
+      "bytes": 5554,
+      "gzipBytes": 2676
     }
   ],
   "timings": [
     {
-      "library": "cowboy-curly",
+      "library": "@calebduren/typograph",
       "inputCodeUnits": 1024,
-      "medianMs": 0.0391,
-      "p95Ms": 0.0611,
-      "iterationsPerRound": 75
+      "medianMs": 0.028,
+      "p95Ms": 0.0986,
+      "iterationsPerRound": 83
     },
     {
       "library": "smartquotes",
       "inputCodeUnits": 1024,
-      "medianMs": 0.0072,
-      "p95Ms": 0.0077,
+      "medianMs": 0.0082,
+      "p95Ms": 0.0092,
       "iterationsPerRound": 500
     },
     {
       "library": "punctilio",
       "inputCodeUnits": 1024,
-      "medianMs": 0.0999,
-      "p95Ms": 0.1775,
-      "iterationsPerRound": 28
+      "medianMs": 0.1322,
+      "p95Ms": 0.276,
+      "iterationsPerRound": 11
     },
     {
       "library": "retext-smartypants",
       "inputCodeUnits": 1024,
-      "medianMs": 0.3595,
-      "p95Ms": 0.4317,
-      "iterationsPerRound": 21
+      "medianMs": 0.3311,
+      "p95Ms": 0.4468,
+      "iterationsPerRound": 11
     },
     {
-      "library": "cowboy-curly",
+      "library": "@calebduren/typograph",
       "inputCodeUnits": 10240,
-      "medianMs": 0.2342,
-      "p95Ms": 0.2452,
-      "iterationsPerRound": 37
+      "medianMs": 0.2493,
+      "p95Ms": 0.2597,
+      "iterationsPerRound": 36
     },
     {
       "library": "smartquotes",
       "inputCodeUnits": 10240,
-      "medianMs": 0.0611,
-      "p95Ms": 0.0676,
-      "iterationsPerRound": 141
+      "medianMs": 0.0643,
+      "p95Ms": 0.0668,
+      "iterationsPerRound": 97
     },
     {
       "library": "punctilio",
       "inputCodeUnits": 10240,
-      "medianMs": 0.987,
-      "p95Ms": 1.1001,
+      "medianMs": 1.188,
+      "p95Ms": 1.2644,
       "iterationsPerRound": 7
     },
     {
       "library": "retext-smartypants",
       "inputCodeUnits": 10240,
-      "medianMs": 3.5251,
-      "p95Ms": 4.137,
+      "medianMs": 2.9949,
+      "p95Ms": 3.1777,
       "iterationsPerRound": 3
     },
     {
-      "library": "cowboy-curly",
+      "library": "@calebduren/typograph",
       "inputCodeUnits": 102400,
-      "medianMs": 2.3099,
-      "p95Ms": 2.6377,
+      "medianMs": 2.5633,
+      "p95Ms": 2.7411,
       "iterationsPerRound": 4
     },
     {
       "library": "smartquotes",
       "inputCodeUnits": 102400,
-      "medianMs": 0.5937,
-      "p95Ms": 0.6772,
-      "iterationsPerRound": 13
+      "medianMs": 0.7295,
+      "p95Ms": 0.7631,
+      "iterationsPerRound": 12
     },
     {
       "library": "punctilio",
       "inputCodeUnits": 102400,
-      "medianMs": 10.6169,
-      "p95Ms": 12.6132,
+      "medianMs": 13.7163,
+      "p95Ms": 18.8281,
       "iterationsPerRound": 1
     },
     {
       "library": "retext-smartypants",
       "inputCodeUnits": 102400,
-      "medianMs": 46.7359,
-      "p95Ms": 139.5481,
+      "medianMs": 41.6703,
+      "p95Ms": 146.896,
       "iterationsPerRound": 1
     }
   ],
   "adversarial": [
     {
       "case": "100k ordinary word",
-      "medianMs": 1.2218,
-      "p95Ms": 1.3104,
-      "iterationsPerRound": 7
+      "medianMs": 1.3634,
+      "p95Ms": 1.3877,
+      "iterationsPerRound": 6
     },
     {
       "case": "99k adjacent quotes",
-      "medianMs": 20.2869,
-      "p95Ms": 22.4771,
+      "medianMs": 22.1537,
+      "p95Ms": 26.0506,
       "iterationsPerRound": 1
     },
     {
       "case": "100k repeated at signs",
-      "medianMs": 4.8903,
-      "p95Ms": 5.2698,
+      "medianMs": 5.501,
+      "p95Ms": 5.6642,
       "iterationsPerRound": 2
     }
   ],
   "streaming": {
-    "medianMs": 3.6421,
-    "p95Ms": 4.3611,
+    "medianMs": 4.0524,
+    "p95Ms": 4.215,
     "iterationsPerRound": 2
   }
 }

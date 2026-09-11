@@ -1,4 +1,4 @@
-name: Check Curly
+name: Check Typograph
 on:
   pull_request:
   push:

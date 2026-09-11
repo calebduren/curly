@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 import assert from 'node:assert/strict';
 
 const root = process.cwd();
-const dir = mkdtempSync(join(tmpdir(), 'curly-consumer-'));
+const dir = mkdtempSync(join(tmpdir(), 'typograph-consumer-'));
 const cache = join(dir, 'npm-cache');
 const exec = (command, args, cwd = dir) =>
   execFileSync(command, args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
@@ -21,16 +21,19 @@ const [pack] = JSON.parse(
       '--pack-destination',
       dir,
       '-w',
-      'cowboy-curly',
+      '@calebduren/typograph',
     ],
     root,
   ),
 );
 for (const f of pack.files)
-  assert.match(f.path, /^(dist\/|prose\.css$|README\.md$|LICENSE$|CHANGELOG\.md$|package\.json$)/);
+  assert.match(
+    f.path,
+    /^(dist\/|(?:prose|typeset|typography)\.css$|README\.md$|LICENSE$|THIRD_PARTY_NOTICES\.md$|CHANGELOG\.md$|package\.json$)/,
+  );
 writeFileSync(
   join(dir, 'package.json'),
-  JSON.stringify({ name: 'curly-clean-consumer', private: true, type: 'module' }),
+  JSON.stringify({ name: 'typograph-clean-consumer', private: true, type: 'module' }),
 );
 exec('npm', [
   'install',
@@ -45,30 +48,37 @@ exec('npm', [
 const checks = `
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {smarten,analyze} from 'cowboy-curly';
-import remarkCurly from 'cowboy-curly/remark';
-import rehypeCurly from 'cowboy-curly/rehype';
-import {createQuoteStream} from 'cowboy-curly/stream';
+import {smarten,analyze} from '@calebduren/typograph';
+import remarkTypograph from '@calebduren/typograph/remark';
+import rehypeTypograph from '@calebduren/typograph/rehype';
+import {createQuoteStream} from '@calebduren/typograph/stream';
+import {createTypeset} from '@calebduren/typograph/typography';
+import {principles} from '@calebduren/typograph/principles';
 assert.equal(smarten('"Hello."'),'“Hello.”');
 assert.equal(analyze('6"').changes.length,0);
 const tree={type:'root',children:[{type:'paragraph',children:[{type:'text',value:'"Hello."'}]}]};
-remarkCurly()(tree);
+remarkTypograph()(tree);
 assert.equal(tree.children[0].children[0].value,'“Hello.”');
 const html={type:'root',children:[{type:'element',tagName:'p',children:[{type:'text',value:'"Hi."'}]}]};
-rehypeCurly()(html);
+rehypeTypograph()(html);
 assert.equal(html.children[0].children[0].value,'“Hi.”');
 const stream=createQuoteStream();
 assert.equal(stream.write('"Hello'), '');
 assert.equal(stream.end('."'), '“Hello.”');
-assert.match(readFileSync(import.meta.resolve('cowboy-curly/prose.css').replace('file://',''),'utf8'),/curly-prose/);
-console.log('ESM, adapters, streaming, CSS: passed');
+assert.match(readFileSync(import.meta.resolve('@calebduren/typograph/prose.css').replace('file://',''),'utf8'),/typograph-prose/);
+assert.equal(createTypeset()['--typeset-size'],'1.125rem');
+assert.ok(principles.some(p=>p.id==='case'));
+assert.match(readFileSync(import.meta.resolve('@calebduren/typograph/typography.css').replace('file://',''),'utf8'),/font-synthesis: none/);
+console.log('ESM, adapters, streaming, CSS, typography, principles: passed');
 `;
 writeFileSync(join(dir, 'consumer.mjs'), checks);
 writeFileSync(
   join(dir, 'consumer.cjs'),
-  `const assert=require('node:assert/strict');const {smarten}=require('cowboy-curly');assert.equal(smarten('"Hello."'),'“Hello.”');for(const name of ['remark','rehype','stream'])assert.ok(require('cowboy-curly/'+name));console.log('CommonJS: passed');`,
+  `const assert=require('node:assert/strict');const {smarten}=require('@calebduren/typograph');assert.equal(smarten('"Hello."'),'“Hello.”');for(const name of ['remark','rehype','stream','typography','principles'])assert.ok(require('@calebduren/typograph/'+name));console.log('CommonJS: passed');`,
 );
-const typed = `import {smarten,type CurlyOptions} from 'cowboy-curly';import remarkCurly from 'cowboy-curly/remark';import rehypeCurly from 'cowboy-curly/rehype';import {createQuoteStream} from 'cowboy-curly/stream';const options:CurlyOptions={primes:true};const result:string=smarten('hello',options);remarkCurly({annotate:true});rehypeCurly();createQuoteStream().end();`;
+const typed = `import {smarten,type TypographOptions} from '@calebduren/typograph';import remarkTypograph from '@calebduren/typograph/remark';import rehypeTypograph from '@calebduren/typograph/rehype';import {createQuoteStream} from '@calebduren/typograph/stream';
+import {createTypeset} from '@calebduren/typograph/typography';
+import {principles} from '@calebduren/typograph/principles';const options:TypographOptions={primes:true};const result:string=smarten('hello',options);remarkTypograph({annotate:true});rehypeTypograph();createQuoteStream().end();`;
 writeFileSync(join(dir, 'consumer.mts'), typed);
 writeFileSync(join(dir, 'consumer.cts'), typed);
 console.log(exec(process.execPath, ['consumer.mjs']).trim());
@@ -89,7 +99,7 @@ exec(process.execPath, [
 ]);
 console.log('TypeScript NodeNext (ESM and CommonJS): passed');
 const packageManifest = JSON.parse(
-  readFileSync(join(dir, 'node_modules/cowboy-curly/package.json'), 'utf8'),
+  readFileSync(join(dir, 'node_modules/@calebduren/typograph/package.json'), 'utf8'),
 );
 assert.equal(Object.keys(packageManifest.dependencies ?? {}).length, 0);
 mkdirSync(resolve('release'), { recursive: true });

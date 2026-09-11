@@ -1,6 +1,6 @@
-import { analyze, type CurlyOptions, type CurlyResult } from './index';
+import { analyze, type TypographOptions, type TypographResult } from './index';
 
-export type StreamOptions = Omit<CurlyOptions, 'protectedRanges'>;
+export type StreamOptions = Omit<TypographOptions, 'protectedRanges'>;
 /**
  * An append-only prose stream. write() emits completed paragraphs; end() flushes.
  * preview() is explicitly provisional and should be called at display cadence.
@@ -14,12 +14,12 @@ export function createQuoteStream(options: StreamOptions = {}) {
   let afterCR = false;
   let ended = false;
   const ensureOpen = () => {
-    if (ended) throw new Error('This Curly stream has ended. Create a new stream.');
+    if (ended) throw new Error('This Typograph stream has ended. Create a new stream.');
   };
   const write = (chunk: string): string => {
     ensureOpen();
     if (typeof chunk !== 'string')
-      throw new TypeError('Curly streams accept decoded string chunks.');
+      throw new TypeError('Typograph streams accept decoded string chunks.');
     const output: string[] = [];
     let start = 0;
     // Visit each incoming code unit once. No rescanning or joining the growing tail.
@@ -50,7 +50,7 @@ export function createQuoteStream(options: StreamOptions = {}) {
   };
   return {
     write,
-    preview(): CurlyResult {
+    preview(): TypographResult {
       return analyze(parts.join(''), options);
     },
     end(chunk = ''): string {
@@ -69,7 +69,9 @@ export function createQuoteStream(options: StreamOptions = {}) {
 }
 
 /** Standard Web TransformStream adapter with the same paragraph buffering policy. */
-export function curlyTransformStream(options: StreamOptions = {}): TransformStream<string, string> {
+export function typographTransformStream(
+  options: StreamOptions = {},
+): TransformStream<string, string> {
   const stream = createQuoteStream(options);
   return new TransformStream({
     transform(chunk, controller) {

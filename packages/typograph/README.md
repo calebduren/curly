@@ -61,15 +61,15 @@ Utilities include `type-measure`, `type-balance`, `type-pretty`, `type-hang`, `t
 
 Use `not-typeset` or `data-not-typeset` to exempt a component and its descendants. Use a `typeset-scroll` wrapper when a wide table should scroll. Tables retain their semantics. Appended blocks add their own space; existing blocks are not restyled by last-child layout rules. A growing paragraph can still rewrap; use ordinary wrapping while streaming if that matters.
 
-If the app already has shadcn Typeset, adapt its owned CSS and add the desired presets rather than loading two versions. See [third-party notices](packages/typograph/THIRD_PARTY_NOTICES.md) for the source revision and modifications. The lightweight `prose.css` / `.typograph-prose` stylesheet is also available for inherited typography without a preset.
+If the app already has shadcn Typeset, adapt its owned CSS and add the desired presets rather than loading two versions. See [third-party notices](./THIRD_PARTY_NOTICES.md) for the source revision and modifications. The lightweight `prose.css` / `.typograph-prose` stylesheet is also available for inherited typography without a preset.
 
 ## Agent skill
 
-The distributable skill lives at [skills/typograph](skills/typograph/SKILL.md). Copy that entire folder into a supported skill directory such as `.agents/skills/` in a consuming project, preserving `references/`.
+The distributable skill lives at [skills/typograph](https://github.com/calebduren/typograph/tree/main/skills/typograph). Copy that entire folder into a supported skill directory such as `.agents/skills/` in a consuming project, preserving `references/`.
 
 > Use $typograph to improve the typography on this page. Keep our fonts. Explain the changes.
 
-The skill connects intent, context, observable evidence, action, verification, and exceptions. Its guidance preserves existing product identities. The website and skill reference share the same [principle source](packages/typograph/src/principles.ts). `npm run build:resources` regenerates the reference and download archives.
+The skill connects intent, context, observable evidence, action, verification, and exceptions. Its guidance preserves existing product identities. The website and skill reference share the same [principle source](https://github.com/calebduren/typograph/blob/main/packages/typograph/src/principles.ts). `npm run build:resources` regenerates the reference and download archives.
 
 ## Punctuation
 
@@ -142,7 +142,7 @@ stream.end('\'t stop."'); // “Don’t stop.”
 
 ## Development
 
-`npm run check` builds both deliverables, typechecks, runs the test suite, and installs the actual archive in a clean consumer to check ESM, CommonJS, types, CSS, adapters, and runtime dependency boundaries. See [CONTRIBUTING.md](CONTRIBUTING.md) and [release instructions](docs/releasing.md).
+`npm run check` builds both deliverables, typechecks, runs the test suite, and installs the actual archive in a clean consumer to check ESM, CommonJS, types, CSS, adapters, and runtime dependency boundaries. See [CONTRIBUTING.md](https://github.com/calebduren/typograph/blob/main/CONTRIBUTING.md) and [release instructions](https://github.com/calebduren/typograph/blob/main/docs/releasing.md).
 
 The principles are original guidance informed by Robert Bringhurst through [Richard Rutter’s web adaptation](https://webtypography.net/), [Impeccable](https://impeccable.style/docs/typeset/), and current browser documentation. Reading CSS adapts [shadcn Typeset](https://ui.shadcn.com/docs/typeset). The preserved punctuation engine shares prior art with SmartyPants, smartquotes, retext-smartypants, and Punctilio.
 

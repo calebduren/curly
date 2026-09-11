@@ -1,194 +1,48 @@
-import React, {
-  createContext,
-  lazy,
-  Suspense,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import remarkMath from 'remark-math';
-import remarkCurly, { type TreeOptions } from 'cowboy-curly/remark';
-import type { CurlyOptions } from 'cowboy-curly';
-import {
-  ArrowDown,
-  ArrowUpRight,
-  ChevronDown,
-  Copy,
-  Pause,
-  Play,
-  RotateCcw,
-  StepForward,
-  Terminal,
-  X,
-} from 'lucide-react';
-import '@curly/fonts.css';
+import { ArrowDown, ArrowDownToLine, ArrowUpRight, Copy } from 'lucide-react';
+import { principles } from '@calebduren/typograph/principles';
+import { TypographyLab, type SpecimenTopic } from './TypographyLab';
+import { PunctuationLab } from './PunctuationLab';
+import { Disclosure } from './Controls';
+import { installCommand, packageFilename } from './distribution';
+import { integrationSnippet } from './model';
+import './fonts.css';
 import './styles.css';
-import { samples } from './samples';
-import { inspectMarkdown, integrationSnippet } from './model';
-import { ReplayBoundary } from './ReplayBoundary';
-import { installCommand, distributionLabel } from './distribution';
-import { BrandMark } from './BrandMark';
-import { Disclosure, TaskStatus, Toggle } from './Controls';
-import { HowItWorks } from './HowItWorks';
-import { Footer } from './Footer';
 
-const StreamingSpecimen = lazy(() => import('./StreamingSpecimen'));
-const defaults = { primes: false, ellipses: false };
-const chunkSizes = [1, 3, 2, 4, 1, 2, 3, 2];
-const kindNames: Record<string, string> = {
-  'opening-quote': 'Opening quote',
-  'closing-quote': 'Closing quote',
-  apostrophe: 'Apostrophe',
-  prime: 'Prime',
-  ellipsis: 'Ellipsis',
-  protected: 'Kept exact',
-  ambiguous: 'Left for you',
-};
+const topics: { id: SpecimenTopic; title: string }[] = [
+  { id: 'rhythm', title: 'Rhythm & measure' },
+  { id: 'hierarchy', title: 'Hierarchy' },
+  { id: 'punctuation', title: 'Punctuation' },
+  { id: 'numbers', title: 'Numbers' },
+];
 
-const InspectionContext = createContext<{
-  inspect: boolean;
-  selected: string | null;
-  select: (id: string) => void;
-}>({ inspect: false, selected: null, select: () => {} });
-
-function ChangeMark({
-  node,
-  children,
-}: React.ComponentProps<'mark'> & { node?: { properties?: Record<string, unknown> } }) {
-  const { inspect, selected, select } = useContext(InspectionContext);
-  const id = String(node?.properties?.dataCurlyId ?? '');
-  const reason = String(node?.properties?.dataCurlyReason ?? 'Punctuation change');
+function Mark() {
   return (
-    <span
-      className={'change-mark' + (selected === id ? ' selected' : '')}
-      role={inspect ? 'button' : undefined}
-      tabIndex={inspect ? 0 : undefined}
-      aria-label={inspect ? reason : undefined}
-      aria-pressed={inspect ? selected === id : undefined}
-      onClick={() => {
-        if (inspect) select(id);
-      }}
-      onKeyDown={(event) => {
-        if (inspect && (event.key === 'Enter' || event.key === ' ')) {
-          event.preventDefault();
-          select(id);
-        }
-      }}
-    >
-      {children}
-    </span>
+    <svg className="brand-symbol" viewBox="0 0 32 32" aria-hidden="true">
+      <path fill="currentColor" d="M2 4h23v6H2zm9 8h7v16h-7z" />
+      <circle cx="26" cy="24" r="4" fill="var(--gray)" />
+    </svg>
   );
 }
-
-function ProseLink({ children, node, ...props }: React.ComponentProps<'a'> & { node?: unknown }) {
-  const { inspect } = useContext(InspectionContext);
-  return inspect ? (
-    <span className="inspection-link">{children}</span>
-  ) : (
-    <a {...props} target="_blank" rel="noreferrer">
-      {children}
-    </a>
-  );
-}
-
-const markComponents = {
-  mark: ChangeMark,
-  img: ({ alt }: React.ComponentProps<'img'>) => (
-    <span className="omitted-image">[Image: {alt ?? 'remote media'}]</span>
-  ),
-  a: ProseLink,
-  input: TaskStatus,
-};
 
 function App() {
-  const [source, setSource] = useState(samples[0].source);
-  const [sample, setSample] = useState('letter');
-  const [options, setOptions] = useState<CurlyOptions>(defaults);
-  const [formatted, setFormatted] = useState(true);
-  const [inspect, setInspect] = useState(false);
-  const [reading, setReading] = useState(false);
-  const [typeface, setTypeface] = useState<'serif' | 'sans'>('serif');
-  const [selected, setSelected] = useState<string | null>(null);
-  const [playing, setPlaying] = useState(false);
-  const [streaming, setStreaming] = useState(false);
-  const [cursor, setCursor] = useState(0);
-  const [speed, setSpeed] = useState('natural');
-  const [snippetKind, setSnippetKind] = useState('React Markdown');
+  const [topic, setTopic] = useState<SpecimenTopic>('rhythm');
+  const [copied, setCopied] = useState('');
   const [notice, setNotice] = useState('');
-  const [copyState, setCopyState] = useState('');
-  const outputRef = useRef<HTMLDivElement>(null);
-  const shown = streaming ? source.slice(0, cursor) : source;
-  const report = useMemo(() => inspectMarkdown(shown, options), [shown, options]);
-  const changes = report.decisions.filter((d) => d.original !== d.replacement);
-  const protectedCount = report.decisions.filter((d) => d.kind === 'protected').length;
-  const current = report.decisions.find((d) => d.block + ':' + d.start === selected);
-  const snippet = useMemo(() => integrationSnippet(snippetKind, options), [snippetKind, options]);
-  useEffect(() => {
-    if (!playing) return;
-    let chunk = 0;
-    const timer = window.setInterval(
-      () =>
-        setCursor((n) =>
-          Math.min(
-            source.length,
-            n + (speed === 'slow' ? 1 : chunkSizes[chunk++ % chunkSizes.length]),
-          ),
-        ),
-      speed === 'slow' ? 110 : 90,
-    );
-    return () => window.clearInterval(timer);
-  }, [playing, source, speed]);
-  useEffect(() => {
-    if (streaming && cursor >= source.length) setPlaying(false);
-  }, [cursor, source.length, streaming]);
+  const [integration, setIntegration] = useState('React Markdown');
   useEffect(() => {
     if (!notice) return;
-    const id = window.setTimeout(() => setNotice(''), 3500);
-    return () => clearTimeout(id);
+    const timer = window.setTimeout(() => {
+      setNotice('');
+      setCopied('');
+    }, 3500);
+    return () => window.clearTimeout(timer);
   }, [notice]);
-  useEffect(() => {
-    if (!copyState) return;
-    const id = window.setTimeout(() => setCopyState(''), 1800);
-    return () => clearTimeout(id);
-  }, [copyState]);
-  const stopStream = () => {
-    setPlaying(false);
-    setStreaming(false);
-    setCursor(0);
-  };
-  function updateSource(value: string) {
-    setSource(value);
-    setSample('custom');
-    setSelected(null);
-    stopStream();
-  }
-  function chooseSample(value: string) {
-    const next = samples.find((s) => s.id === value);
-    if (next) {
-      setSource(next.source);
-      setSample(value);
-      setSelected(null);
-      stopStream();
-    }
-  }
-  function replay() {
-    setInspect(false);
-    setSelected(null);
-    if (!streaming || cursor >= source.length) {
-      setCursor(0);
-      setStreaming(true);
-      setPlaying(true);
-    } else setPlaying(!playing);
-  }
   async function copy(text: string, key: string) {
     try {
       await navigator.clipboard.writeText(text);
-      setCopyState(key);
+      setCopied(key);
       setNotice('Copied to your clipboard.');
     } catch {
       setNotice('Clipboard access is unavailable. Select the text and copy it manually.');
@@ -197,493 +51,320 @@ function App() {
 
   return (
     <>
-      <a className="skip-link" href="#playground">
-        Skip to playground
+      <a className="skip-link" href="#specimen">
+        Skip to specimen
       </a>
-      <header className="masthead" id="top">
-        <BrandMark />
+      <header className="site-header" id="top">
+        <a className="wordmark" href="#top" aria-label="Typograph home">
+          <Mark />
+          <span>typograph</span>
+        </a>
         <nav aria-label="Main navigation">
-          <a href="#playground">Playground</a>
-          <a href="#how-it-works">How it works</a>
-          <a href="#install">Install</a>
+          <a href="#specimen">Specimen</a>
+          <a href="#principles">Principles</a>
+          <a href="#skill">Agent skill</a>
+          <a className="nav-download" href="#get">
+            Get Typograph <ArrowDown size={15} />
+          </a>
         </nav>
       </header>
-
       <main>
-        <section className="introduction editorial" aria-labelledby="title">
-          <h1 id="title">Mind your marks.</h1>
-          <div className="intro-copy">
-            <p>Good words deserve good type.</p>
+        <section className="intro" aria-labelledby="intro-title">
+          <h1 id="intro-title">
+            Type with <span>intention.</span>
+          </h1>
+          <div className="intro-aside">
             <p>
-              A small, open-source typography kit for AI apps. Try your words. See the difference.
-              Take it with you.
+              Good typography is a relationship between letters, words, and the space around them.
             </p>
-          </div>
-        </section>
-
-        <section id="playground" className="desk" aria-label="Typography playground">
-          <div className="desk-top">
-            <div className="sample-select">
-              <label htmlFor="sample">Start with</label>
-              <div className="select-wrap">
-                <select id="sample" value={sample} onChange={(e) => chooseSample(e.target.value)}>
-                  {samples.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-                  {sample === 'custom' && <option value="custom">Your own words</option>}
-                </select>
-                <ChevronDown size={14} />
-              </div>
-            </div>
-          </div>
-          <div className="workspace">
-            <div className="source-pane">
-              <div className="pane-toolbar">
-                <label htmlFor="source">Your words</label>
-                <span>Markdown welcome</span>
-              </div>
-              <textarea
-                id="source"
-                value={source}
-                onChange={(e) => updateSource(e.target.value)}
-                spellCheck={false}
-                maxLength={100000}
-                placeholder={'Put your words here. "Quotes", apostrophes, code...'}
-                aria-describedby="source-help"
-              />
-              <div className="source-footer">
-                <span id="source-help">
-                  Your text is processed here in your browser. It isn’t uploaded.
-                </span>
-                <span>{source.length.toLocaleString()} / 100,000</span>
-              </div>
-            </div>
-            <div className="output-pane">
-              <div className="pane-toolbar output-toolbar">
-                <div className="preview-toggles">
-                  <div
-                    className="segmented preview-punctuation"
-                    role="group"
-                    aria-label="Preview punctuation"
-                  >
-                    <button
-                      type="button"
-                      aria-pressed={!formatted}
-                      onClick={() => {
-                        setFormatted(false);
-                        setInspect(false);
-                      }}
-                    >
-                      Original
-                    </button>
-                    <button
-                      type="button"
-                      aria-pressed={formatted}
-                      onClick={() => setFormatted(true)}
-                    >
-                      With Curly
-                    </button>
-                  </div>
-                  <div
-                    className="segmented typeface-switch"
-                    role="group"
-                    aria-label="Reading typeface"
-                  >
-                    <button
-                      type="button"
-                      aria-pressed={typeface === 'serif'}
-                      onClick={() => setTypeface('serif')}
-                    >
-                      Serif
-                    </button>
-                    <button
-                      type="button"
-                      aria-pressed={typeface === 'sans'}
-                      onClick={() => setTypeface('sans')}
-                    >
-                      Sans serif
-                    </button>
-                  </div>
-                </div>
-                <Toggle
-                  className="highlight-toggle"
-                  label="Highlight changes"
-                  checked={inspect}
-                  controls="inspection"
-                  disabled={!formatted || streaming}
-                  onChange={(value) => {
-                    setInspect(value);
-                    setSelected(null);
-                  }}
-                />
-              </div>
-              <div className={'specimen-wrap' + (reading ? ' reading-on' : '')}>
-                <div
-                  ref={outputRef}
-                  data-typeface={typeface}
-                  className={
-                    'specimen' + (reading ? ' curly-prose' : '') + (inspect ? ' inspecting' : '')
-                  }
-                  aria-label={formatted ? 'Formatted reading preview' : 'Original reading preview'}
-                >
-                  {!shown ? (
-                    <p className="empty-specimen">
-                      A little space for
-                      <br />
-                      <em>your next good thought.</em>
-                    </p>
-                  ) : streaming ? (
-                    <ReplayBoundary onExit={stopStream}>
-                      <Suspense fallback={<p className="replay-loading">Loading the replay…</p>}>
-                        <StreamingSpecimen
-                          source={shown}
-                          options={options}
-                          formatted={formatted}
-                          playing={playing}
-                        />
-                      </Suspense>
-                    </ReplayBoundary>
-                  ) : (
-                    <InspectionContext.Provider value={{ inspect, selected, select: setSelected }}>
-                      <Markdown
-                        remarkPlugins={[
-                          remarkGfm,
-                          remarkMath,
-                          ...(formatted
-                            ? [
-                                [remarkCurly, { ...options, annotate: true }] as [
-                                  typeof remarkCurly,
-                                  TreeOptions,
-                                ],
-                              ]
-                            : []),
-                        ]}
-                        components={markComponents}
-                      >
-                        {shown}
-                      </Markdown>
-                    </InspectionContext.Provider>
-                  )}
-                </div>
-              </div>
-              <div className="output-footer">
-                <span>
-                  {formatted ? (
-                    <>
-                      <strong>{changes.length}</strong>{' '}
-                      {changes.length === 1 ? 'little improvement' : 'little improvements'}
-                      {protectedCount > 0 && <> · {protectedCount} kept exact</>}
-                    </>
-                  ) : (
-                    'Your punctuation, just as you wrote it.'
-                  )}
-                </span>
-                <div>
-                  <button
-                    type="button"
-                    className="text-button"
-                    disabled={!shown}
-                    onClick={() => copy(outputRef.current?.innerText ?? '', 'output')}
-                  >
-                    <Copy size={15} />
-                    {copyState === 'output' ? 'Copied' : 'Copy text'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="playground-controls">
-            <div className="rule-bar" role="group" aria-label="Optional formatting">
-              <Toggle
-                label="Primes"
-                checked={!!options.primes}
-                onChange={(value) => {
-                  setOptions({ ...options, primes: value });
-                  setSelected(null);
-                }}
-              />
-              <Toggle
-                label="Ellipses"
-                checked={!!options.ellipses}
-                onChange={(value) => {
-                  setOptions({ ...options, ellipses: value });
-                  setSelected(null);
-                }}
-              />
-              <Toggle label="Reading styles" checked={reading} onChange={setReading} />
-            </div>
-            <div className="stream-bar">
-              <div>
-                <button type="button" className="replay-button" disabled={!source} onClick={replay}>
-                  {playing ? <Pause size={14} /> : <Play size={14} />}{' '}
-                  {playing
-                    ? 'Pause replay'
-                    : streaming && cursor < source.length
-                      ? 'Resume replay'
-                      : 'Replay as a stream'}
-                </button>
-                <span className="replay-explanation">
-                  Watch the preview arrive a little at a time.
-                </span>
-              </div>
-              {streaming && (
-                <div className="stream-controls">
-                  <label className="visually-hidden" htmlFor="speed">
-                    Replay speed
-                  </label>
-                  <select id="speed" value={speed} onChange={(e) => setSpeed(e.target.value)}>
-                    <option value="natural">Natural pace</option>
-                    <option value="slow">One character</option>
-                  </select>
-                  <button
-                    className="icon-button"
-                    disabled={playing || cursor >= source.length}
-                    aria-label="Advance one character"
-                    onClick={() => setCursor((n) => Math.min(source.length, n + 1))}
-                  >
-                    <StepForward size={15} />
-                  </button>
-                  <button
-                    className="icon-button"
-                    aria-label="End replay and show all text"
-                    onClick={stopStream}
-                  >
-                    <RotateCcw size={15} />
-                  </button>
-                  <span className="stream-progress">
-                    {Math.round((cursor / Math.max(1, source.length)) * 100)}%
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-          <div
-            className="inspection-reveal"
-            id="inspection"
-            data-open={inspect}
-            aria-hidden={!inspect}
-            inert={!inspect}
-          >
-            <div className="inspection-clip">
-              <div className="inspection-panel">
-                <div className="inspection-heading">
-                  <h3>A closer look</h3>
-                  <span>Select a mark in the preview or a decision below.</span>
-                  <button
-                    className="icon-button"
-                    aria-label="Close inspection"
-                    onClick={() => {
-                      setInspect(false);
-                      setSelected(null);
-                    }}
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-                <div className="decision-list">
-                  {report.decisions.length ? (
-                    report.decisions.map((d, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        className={
-                          'decision' + (selected === d.block + ':' + d.start ? ' selected' : '')
-                        }
-                        onClick={() => setSelected(d.block + ':' + d.start)}
-                      >
-                        <span className="decision-glyph">
-                          {d.kind === 'protected' ? (
-                            <Terminal size={15} />
-                          ) : (
-                            <>
-                              {d.original}
-                              <span>→</span>
-                              {d.replacement}
-                            </>
-                          )}
-                        </span>
-                        <span>{kindNames[d.kind]}</span>
-                      </button>
-                    ))
-                  ) : (
-                    <p>No punctuation decisions to make. Your words are ready.</p>
-                  )}
-                </div>
-                <div className="decision-detail" aria-live="polite">
-                  {current ? (
-                    <>
-                      <strong>{kindNames[current.kind]}.</strong> {current.reason}
-                      <code>
-                        {current.context.slice(
-                          Math.max(0, current.start - 30),
-                          Math.min(current.context.length, current.end + 30),
-                        )}
-                      </code>
-                    </>
-                  ) : (
-                    <p>
-                      Apostrophes, quotation marks, and primes have different jobs. Curly pays
-                      attention to the company they keep.
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="principle editorial" aria-labelledby="principle-title">
-          <h2 id="principle-title">A little care for the written word.</h2>
-          <p>
-            An apostrophe is a small thing. So is the difference between something that works and
-            something that feels considered.
-          </p>
-          <p>
-            Curly brings that care to the text in your app. It respects code, keeps your words
-            intact, and leaves uncertain marks for you to decide.
-          </p>
-          <a href="#field-notes" className="underlined-link">
-            Read our field notes <ArrowDown size={15} />
-          </a>
-        </section>
-
-        <HowItWorks />
-
-        <section id="install" className="install-section editorial" aria-labelledby="install-title">
-          <div className="install-copy">
-            <h2 id="install-title">Good type. Small package.</h2>
-            <p>Add Curly where your app renders prose. Your model, your interface, your words.</p>
-            <div className="install-command">
-              <div className="install-command-heading">
-                <span>Install with npm</span>
-                <button
-                  type="button"
-                  className="text-button"
-                  aria-label="Copy install command"
-                  onClick={() => copy(installCommand, 'install')}
-                >
-                  <Copy size={15} />
-                  {copyState === 'install' ? 'Copied' : 'Copy install command'}
-                </button>
-              </div>
-              <code>{installCommand}</code>
-            </div>
-            <p className="install-footnote">
-              {distributionLabel}
-              <br />
-              Open source · MIT licensed · Runs locally
+            <p className="muted">
+              Typograph brings that care to the web, with practical tools and principles for you and
+              your agents.
             </p>
-            <a className="underlined-link" href="https://github.com/calebduren/curly">
-              Source & documentation <ArrowUpRight size={15} />
+            <a className="inline-link" href="#specimen">
+              Find your rhythm <ArrowDown size={17} />
             </a>
           </div>
-          <div className="code-panel">
-            <div className="code-toolbar">
-              <label className="visually-hidden" htmlFor="integration">
-                Integration
-              </label>
-              <div className="select-wrap">
-                <select
-                  id="integration"
-                  value={snippetKind}
-                  onChange={(e) => setSnippetKind(e.target.value)}
+        </section>
+
+        <section
+          className="specimen-section"
+          id="specimen"
+          aria-label="Interactive typography specimen"
+        >
+          <div className="specimen-nav">
+            <div className="topic-switch" role="group" aria-label="Choose a typography specimen">
+              {topics.map(({ id, title }) => (
+                <button
+                  key={id}
+                  type="button"
+                  aria-pressed={topic === id}
+                  onClick={() => setTopic(id)}
                 >
-                  {['React Markdown', 'Streamdown', 'Plain text', 'HTML / rehype'].map((k) => (
-                    <option key={k}>{k}</option>
-                  ))}
-                </select>
-                <ChevronDown size={14} />
-              </div>
-              <button
-                type="button"
-                className="text-button"
-                aria-label="Copy integration code"
-                onClick={() => copy(snippet, 'snippet')}
-              >
-                <Copy size={15} />
-                {copyState === 'snippet' ? 'Copied' : 'Copy code'}
-              </button>
+                  {title}
+                </button>
+              ))}
             </div>
-            <pre>
-              <code>{snippet}</code>
-            </pre>
-            <p>Uses the punctuation options selected above.</p>
+            <span className="specimen-hint">A study in the details</span>
+          </div>
+          <div hidden={topic === 'punctuation'}>
+            <TypographyLab topic={topic === 'punctuation' ? 'rhythm' : topic} />
+          </div>
+          <div hidden={topic !== 'punctuation'}>
+            <PunctuationLab active={topic === 'punctuation'} />
           </div>
         </section>
 
-        <section id="field-notes" className="field-notes editorial" aria-labelledby="notes-title">
-          <div>
-            <h2 id="notes-title">Small marks. Considered decisions.</h2>
-            <p>What to know before you put Curly to work.</p>
+        <section
+          className="principles-section section-grid"
+          id="principles"
+          aria-labelledby="principles-title"
+        >
+          <div className="section-intro">
+            <h2 id="principles-title">
+              A reason for <br />
+              every rule.
+            </h2>
+            <p>Typography becomes easier to judge when you know what to look for.</p>
+            <p className="muted">
+              These principles connect an intention to something you can observe, change, and check.
+            </p>
           </div>
-          <div className="notes-list">
-            <Disclosure title="What does Curly change?" defaultOpen>
+          <div className="principle-list">
+            {principles.map((principle) => (
+              <Disclosure title={principle.title} key={principle.id}>
+                <p className="principle-summary">{principle.summary}</p>
+                <dl className="principle-details">
+                  <div>
+                    <dt>Look for</dt>
+                    <dd>{principle.observe}</dd>
+                  </div>
+                  <div>
+                    <dt>Make a decision</dt>
+                    <dd>{principle.action}</dd>
+                  </div>
+                  <div>
+                    <dt>Check the result</dt>
+                    <dd>{principle.verify}</dd>
+                  </div>
+                  <div>
+                    <dt>Use judgment</dt>
+                    <dd>{principle.exception}</dd>
+                  </div>
+                </dl>
+                <div className="principle-sources">
+                  <span>{principle.kind}</span>
+                  {principle.sources.map((source) => (
+                    <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
+                      {source.title}
+                      <ArrowUpRight size={13} />
+                    </a>
+                  ))}
+                </div>
+              </Disclosure>
+            ))}
+          </div>
+        </section>
+
+        <section className="skill-section section-grid" id="skill" aria-labelledby="skill-title">
+          <div className="section-intro">
+            <h2 id="skill-title">
+              Give your agent <br />
+              an eye for type.
+            </h2>
+            <p>
+              The same principles, written as a practical skill. It starts with your content, your
+              fonts, and the way people read.
+            </p>
+            <a className="button primary-button" href="./downloads/typograph-skill.tar.gz" download>
+              Download the skill <ArrowDownToLine size={16} />
+            </a>
+            <a
+              className="inline-link quiet-link"
+              href="./skill/SKILL.md"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read the instructions <ArrowUpRight size={15} />
+            </a>
+          </div>
+          <div className="skill-preview">
+            <div className="skill-prompt">
+              <span>Try asking</span>
               <p>
-                Straight quotation marks become directional quotes. Contractions and possessives get
-                proper apostrophes. Enable primes for clear measurement notation, or ellipses for
-                three prose dots. Existing curly punctuation is preserved. English conventions are
-                supported in V1.
+                “Use Typograph to improve the typography on this page. Keep our fonts. Explain the
+                changes.”
               </p>
-            </Disclosure>
-            <Disclosure title="Will it touch my code?">
-              <p>
-                The Markdown integration protects code blocks, inline code, HTML markup, and math
-                nodes. The HTML integration protects code elements and attributes. Mark exact HTML
-                with <code>data-curly="off"</code>, or supply protected ranges to the plain-text
-                function. Pass prose to the plain-text API; use the integrations for structured
-                content.
-              </p>
-            </Disclosure>
-            <Disclosure title="How does streaming work?">
-              <p>
-                For Markdown, Curly works inside your renderer. The playground uses Streamdown for
-                its replay. An unfinished block is provisional and may change as more text arrives.
-                The separate prose stream utility buffers paragraphs and emits settled text; it does
-                not process JSON, SSE envelopes, or tool calls.
-              </p>
-            </Disclosure>
-            <Disclosure title="What happens to my text?">
-              <p>
-                The playground processes text in your browser. No account, model call, or text
-                upload is needed. “Copy text” copies the currently displayed reading preview. Your
-                original Markdown stays in the input, and remote images in it are not loaded.
-              </p>
-            </Disclosure>
-            <Disclosure title="Why doesn’t it change every mark?">
-              <p>
-                Curly tracks opening quotes within a paragraph, so <code>"Model 6"</code> closes as
-                a quotation. A bare <code>6"</code> has no opening quote to match and too little
-                context to identify a measurement. Curly leaves it alone. Add context, such as{' '}
-                <code>6" wide</code>, and the measurement becomes clear. “Highlight changes”
-                explains each decision.
-              </p>
-            </Disclosure>
-            <Disclosure title="Can I use just the reading styles?">
-              <p>
-                Yes. Import <code>cowboy-curly/prose.css</code> and apply <code>curly-prose</code>{' '}
-                to a prose container. It adds line length, paragraph rhythm, heading balance, and
-                sensible overflow. It inherits your fonts and colors, and works independently of
-                punctuation conversion.
-              </p>
-            </Disclosure>
+              <button
+                className="text-button"
+                onClick={() =>
+                  copy(
+                    'Use $typograph to improve the typography on this page. Keep our fonts. Explain the changes.',
+                    'prompt',
+                  )
+                }
+              >
+                <Copy size={15} />
+                {copied === 'prompt' ? 'Copied' : 'Copy prompt'}
+              </button>
+            </div>
+            <ol className="skill-sequence">
+              <li>
+                <strong>Understand the context.</strong>
+                <span>Reading, scanning, comparing, or watching text arrive.</span>
+              </li>
+              <li>
+                <strong>Make the relationships deliberate.</strong>
+                <span>Choose a hierarchy. Connect the size, measure, and leading.</span>
+              </li>
+              <li>
+                <strong>Look at the result.</strong>
+                <span>Inspect real content, fallback fonts, narrow screens, and larger text.</span>
+              </li>
+            </ol>
+            <p className="skill-install">
+              Extract the archive into your project’s <code>.agents/skills/</code> directory. The{' '}
+              <code>typograph</code> folder includes the skill and its references.
+            </p>
+          </div>
+        </section>
+
+        <section className="get-section section-grid" id="get" aria-labelledby="get-title">
+          <div className="section-intro">
+            <h2 id="get-title">
+              A place in <br />
+              your toolkit.
+            </h2>
+            <p>
+              Use the reading styles, the punctuation engine, or the skill. Each works
+              independently.
+            </p>
+            <p className="muted">
+              This preview is distributed as an installable archive. Download it, then run the
+              command from the same directory.
+            </p>
+            <a className="button primary-button" href={`./downloads/${packageFilename}`} download>
+              Download the package <ArrowDownToLine size={16} />
+            </a>
+          </div>
+          <div className="integration-panel">
+            <div className="install-command">
+              <code>{installCommand}</code>
+              <button
+                className="icon-button"
+                aria-label="Copy install command"
+                onClick={() => copy(installCommand, 'install')}
+              >
+                <Copy size={16} />
+              </button>
+            </div>
+            <div className="integration-toolbar">
+              <label htmlFor="integration">Use it with</label>
+              <select
+                id="integration"
+                value={integration}
+                onChange={(event) => setIntegration(event.target.value)}
+              >
+                <option>Reading CSS</option>
+                <option>React Markdown</option>
+                <option>Streamdown</option>
+                <option>Plain text</option>
+                <option>HTML / rehype</option>
+              </select>
+              <button
+                className="text-button"
+                onClick={() =>
+                  copy(
+                    integration === 'Reading CSS'
+                      ? cssExample
+                      : integrationSnippet(integration, {}),
+                    'code',
+                  )
+                }
+              >
+                <Copy size={15} />
+                {copied === 'code' ? 'Copied' : 'Copy code'}
+              </button>
+            </div>
+            <pre className="integration-code">
+              <code>
+                {integration === 'Reading CSS' ? cssExample : integrationSnippet(integration, {})}
+              </code>
+            </pre>
+            <p className="integration-note">
+              The punctuation engine runs locally, with no runtime dependencies. The skill works
+              with your existing agent.
+            </p>
+          </div>
+        </section>
+        <section className="colophon section-grid" aria-labelledby="colophon-title">
+          <div className="section-intro">
+            <h2 id="colophon-title">
+              Built on a <br />
+              long tradition.
+            </h2>
+          </div>
+          <div>
+            <p>
+              Informed by Robert Bringhurst’s <cite>The Elements of Typographic Style</cite>,
+              Richard Rutter’s adaptation for the web, and Impeccable’s approach to typography. The
+              reading CSS builds on shadcn Typeset.
+            </p>
+            <div className="source-links">
+              <a href="https://webtypography.net/" target="_blank" rel="noreferrer">
+                Web typography <ArrowUpRight size={14} />
+              </a>
+              <a href="https://impeccable.style/docs/typeset/" target="_blank" rel="noreferrer">
+                Impeccable <ArrowUpRight size={14} />
+              </a>
+              <a href="https://ui.shadcn.com/docs/typeset" target="_blank" rel="noreferrer">
+                shadcn Typeset <ArrowUpRight size={14} />
+              </a>
+            </div>
+            <p className="colophon-note">
+              English punctuation conventions. Contextual typography guidance. Every automatic
+              change can be inspected.
+            </p>
           </div>
         </section>
       </main>
-      <Footer />
-      <div className={'toast' + (notice ? ' visible' : '')} role="status">
+      <footer className="site-footer">
+        <a className="wordmark" href="#top">
+          <Mark />
+          <span>typograph</span>
+        </a>
+        <span>Consider the details.</span>
+        <div className="footer-links">
+          <a href="https://github.com/calebduren/typograph" target="_blank" rel="noreferrer">
+            Source <ArrowUpRight size={14} />
+          </a>
+          <a href="https://calebduren.com" target="_blank" rel="noreferrer">
+            Caleb Durenberger <ArrowUpRight size={14} />
+          </a>
+        </div>
+        <p className="font-credit">
+          Set in{' '}
+          <a href="https://displaay.net/typeface/serrif" target="_blank" rel="noreferrer">
+            Serrif
+          </a>{' '}
+          and{' '}
+          <a href="https://displaay.net/typeface/saans" target="_blank" rel="noreferrer">
+            Saans
+          </a>{' '}
+          by{' '}
+          <a href="https://displaay.net/" target="_blank" rel="noreferrer">
+            Displaay Type Foundry
+          </a>
+          .
+        </p>
+      </footer>
+      <div className="toast" role="status" aria-live="polite" data-visible={!!notice}>
         {notice}
       </div>
     </>
   );
 }
-const root: ReturnType<typeof createRoot> =
-  import.meta.hot?.data.root ?? createRoot(document.getElementById('root')!);
-if (import.meta.hot) import.meta.hot.data.root = root;
 
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+const cssExample = `import '@calebduren/typograph/typography.css';\n\n<article className="typeset typeset-article type-measure">\n  {children}\n</article>\n\n/* Your fonts. A considered starting rhythm. */\n.typeset-article {\n  --typeset-font-body: var(--font-body);\n  --typeset-size: 1.125rem;\n  --typeset-leading: 1.666667;\n  --typograph-measure: 64ch;\n}`;
+
+createRoot(document.getElementById('root')!).render(<App />);

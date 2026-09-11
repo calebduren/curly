@@ -3,3 +3,13 @@
 @import '@fontsource-variable/dm-sans';
 @import '@fontsource-variable/dm-sans/wght-italic.css';
 @import '@fontsource/dm-mono/400.css';
+@import '@typograph/brand-fonts';
+
+/* Adobe’s full font retains real pnum/tnum features for the numeral specimen. */
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/SourceSerif4Variable-Roman.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}

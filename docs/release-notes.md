@@ -1,17 +1,17 @@
-Curly 1.0.1 refines the playground and corrects creator attribution to Caleb Durenberger, with a link to [calebduren.com](https://calebduren.com).
+# Typograph 2.0.0-next.1 preview
 
-Inspection now preserves the reading text’s dimensions, keeps keyboard focus on selected punctuation, and animates highlights and the explanation panel. The palette uses a warm orange brown, and brand attribution uses sentence case. Reduced-motion preferences are respected.
+Typograph brings together a deterministic English punctuation engine, optional reading styles, and a portable typography skill for agents. The specimen uses a monochrome palette, a compact type scale, and Serrif and Saans by Displaay.
 
-The typography engine and public APIs are unchanged.
+## Included
 
-Try the [Cloudflare playground](https://cowboy-curly.caleb-9b2.workers.dev/curly/) or install the tested archive:
+- Article, documentation, and conversation reading presets with adjustable size, measure, leading, and paragraph space.
+- Small optical and numeric utilities, with font synthesis disabled.
+- Shared principles covering rhythm, hierarchy, case, numerals, punctuation, and browser limits.
+- Inspectable punctuation, remark/rehype adapters, and paragraph-buffered streaming.
+- Downloadable, locally built package and skill archives.
 
-```sh
-npm install https://github.com/calebduren/curly/releases/download/v1.0.1/cowboy-curly-1.0.1.tgz
-```
+## Integration
 
-Use `import { smarten } from 'cowboy-curly'` or the documented renderer integrations. The package has no runtime dependencies. See the README for scope, streaming latency, and ambiguous cases.
+Use `@calebduren/typograph` and its documented subpaths. The current public names are `TypographOptions`, `TypographResult`, and `typographTransformStream`. HTML opt-outs use `data-typograph="off"`, adapter reports use `tree.data.typograph`, and annotations use `data-typograph-*`. The lightweight inherited stylesheet uses `.typograph-prose`.
 
-Validation includes desktop, tablet, and mobile inspection geometry; keyboard selection and collapsed-panel semantics; build/typecheck; the existing correctness and integration suite; and a clean package consumer.
-
-The archive is available directly from this release. npm registry publication and the `cowboy.is/curly/` domain are separate account-setup steps; the Cloudflare address works now.
+See the [README](../README.md) for installation and examples, and [release instructions](releasing.md) for validation and publication. The source repository is [calebduren/typograph](https://github.com/calebduren/typograph). Domain routing and npm metadata are configured; deployment and registry publication are separate steps.
